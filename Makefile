@@ -6,6 +6,10 @@ ifeq ($(strip $(DEVKITARM)),)
 $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
 endif
 
+ifeq ($(strip $(ASTRALBREW)),)
+$(error "Please set ASTRALBREW in your environment. export ASTRALBREW=<path to>ASTRALBREW")
+endif
+
 include $(DEVKITARM)/gba_rules
 
 #---------------------------------------------------------------------------------
@@ -25,8 +29,8 @@ BUILD		:= build
 SOURCES		:= source
 INCLUDES	:= include
 DATA		:=
-GRAPHICS    := gfx
 MUSIC		:=
+GRAPHICS    := gfx
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -47,14 +51,15 @@ LDFLAGS	=	-g $(ARCH) -Wl,-Map,$(notdir $*.map)
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:= -lmm -lgba
+ASTRAL_VERSION := ${shell ls "$(ASTRALBREW)/lib" | cut -d'.' -f1 | cut -d'-' -f3 | sort -r | head -n 1}
+LIBS	:= -lastralbrew-build-$(ASTRAL_VERSION) -lmm -lgba
 
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	$(LIBGBA)
+LIBDIRS	:=	$(LIBGBA) $(ASTRALBREW)
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -77,7 +82,7 @@ CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
-PNGFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))
+PNGFILES    :=  $(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))
 
 ifneq ($(strip $(MUSIC)),)
 	export AUDIOFILES	:=	$(foreach dir,$(notdir $(wildcard $(MUSIC)/*.*)),$(CURDIR)/$(MUSIC)/$(dir))
@@ -140,9 +145,12 @@ $(OFILES_SOURCES) : $(HFILES)
 
 #---------------------------------------------------------------------------------
 %.s %.h	: %.png %.grit
-#---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------	
 	grit $< -fts -o$*
 
+#%.4bpp.s %.4bpp.h : %.4bpp.png	
+#	touch $*.4bpp.s
+#	touch $*.4bpp.h
 
 #---------------------------------------------------------------------------------
 # The bin2o rule should be copied and modified
