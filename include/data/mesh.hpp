@@ -12,6 +12,8 @@ private:
 	int _width;
 	int _height;
 	u8* data;
+	
+	void copy(const u8* src, int w, int h, int dx, int dy, bool overwrite = false);
 public:	
 	Mesh();
 	Mesh(int x, int y, int width, int height);
@@ -35,10 +37,17 @@ public:
 	
 	int coord_at(int cx, int cy) const;
 	
+	void replace(int v, int w);
+	
 	int at(int px, int py) const;
 	
 	int x() const { return _x; }
 	int y() const { return _y; }
+	
+	void set_x(int _x) { this->_x = _x; }	
+	void set_y(int _y) { this->_y = _y; }	
+	
+	void move(int _x, int _y) { set_x(x()+_x); set_y(y()+_y); } 
 	
 	~Mesh();
 };

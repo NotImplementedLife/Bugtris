@@ -55,7 +55,7 @@ Mesh& Mesh::operator = (Mesh&& m)
 
 void Mesh::resize(int new_width, int new_height, bool clear)
 {
-	u8* new_data = new u8[new_width*new_height];	
+	u8* new_data = new u8[new_width*new_height];		
 	
 	if(!clear)
 	{
@@ -70,11 +70,30 @@ void Mesh::resize(int new_width, int new_height, bool clear)
 	}		
 	delete[] data;
 	data = new_data;	
+	_width = new_width;
+	_height = new_height;
 }
 
 int Mesh::at(int px, int py) const
 {
 	return data[py*_width+px];
+}
+
+void Mesh::copy(const u8* src, int w, int h, int dx, int dy, bool overwrite)
+{
+	for(int iy = 0; iy < h; iy++)
+	{
+		for(int ix=0; ix < w; ix++)
+		{
+			int rx=dx+ix;
+			int ry=dy+iy;
+			if(rx<_width && ry<_height)
+			{
+				if(data[ry*_width+rx]==0 || overwrite)
+					data[ry*_width+rx] = src[iy*w+ix];
+			}
+		}
+	}
 }
 
 void Mesh::copy(const Mesh& src, int dx, int dy, bool overwrite)
@@ -110,12 +129,12 @@ Mesh& Mesh::operator += (const Mesh& rhs)
 	int y1 = min(y(), rhs.y());
 	int x2 = max(x()+width(), rhs.x()+rhs.width());
 	int y2 = max(y()+height(), rhs.y()+rhs.height());
-	
-	Mesh m(*this);
+		
+	Mesh m(*this);	
 	
 	_x = x1;
 	_y = y1;
-	resize(x2-x1+1, y2-y1+1, true);
+	resize(x2-x1, y2-y1, true);
 	copy(m, m.x()-x1, m.y()-y1);
 	copy(rhs, rhs.x()-x1, rhs.y()-y1);
 	return *this;
@@ -150,6 +169,20 @@ bool Mesh::operator || (const Mesh& m) const
 	}	
 	
 	return nrc>0;
+}
+
+void Mesh::replace(int v, int w)
+{
+	for(int iy=0;iy<height();iy++)
+	{		
+		for(int ix=0;ix<width();ix++)
+		{
+			if(data[iy*width()+ix]==v)
+			{
+				data[iy*width()+ix]=w;
+			}
+		}
+	}
 }
 
 Mesh::~Mesh()
