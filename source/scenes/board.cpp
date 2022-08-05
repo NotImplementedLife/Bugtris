@@ -5,6 +5,7 @@ using namespace Astralbrew::Video;
 
 #include "board-bg.h"
 #include "piece_tiles.h"
+#include <stdlib.h>
 
 void Board::draw_mesh(const Mesh& mesh)
 {
@@ -63,11 +64,9 @@ static const u8 mesh_gfx[5][16] =
 };
 
 void Board::spawn_mesh(int gid, int color, int shape)
-{
-	Mesh mesh(0,0,4,4,mesh_gfx[gid]);
-	mesh.replace(1, mk_block(color, shape));
-	meshes.push_back(_move_(mesh));
-	user_controllable_mesh = &meshes[meshes.size()-1];
+{	
+	user_controllable_mesh = new Mesh(0,0,4,4,mesh_gfx[gid]);
+	user_controllable_mesh->replace(1, mk_block(color, shape));
 }
 
 void Board::clear()
@@ -92,11 +91,15 @@ bool Board::ucm_in_bounds()
 	int w = user_controllable_mesh->width();
 	int h = user_controllable_mesh->height();
 	for(int iy=y;iy<y+h;iy++)			
-		for(int ix=x;ix<x+w;ix++)
+		for(int ix=x;ix<x+w;ix++)			
 			if(ix<0 || iy<0 || ix>=10 || iy>=18)
 			{
 				if(user_controllable_mesh->coord_at(ix,iy))
 					return false;
+			}
+			else if(user_controllable_mesh->coord_at(ix,iy) && board_mesh.coord_at(ix,iy))
+			{
+				return false;
 			}
 		
 	return true;
@@ -107,27 +110,33 @@ void Board::init()
 	Video::setMode(0);
 	bgInit(3, Text256x256, Pal8bit, 1, 0);
 	bgWrap(3);
-	dmaCopy(board_bgTiles, CHAR_BASE_ADR(1), board_bgTilesLen);
-	dmaCopy(board_bgMap, MAP_BASE_ADR(0), board_bgMapLen);
+	dmaCopy(board_bgTiles, bgGetTilesPtr(3), board_bgTilesLen);
+	dmaCopy(board_bgMap, bgGetMapPtr(3), board_bgMapLen);
 	dmaCopy(board_bgPal, BG_PALETTE, board_bgPalLen);		
 	copyTiles256(piece_tilesTiles, CHAR_BASE_OFFSET(1, board_bgTilesLen), piece_tilesTilesLen, piece_tilesPal, piece_tilesPalLen, 64);	
 	
 	bgSetScroll(3, 8, 48);
-	bgUpdate();	
+	
+	
+	bgInit(0, Text256x256, Pal4bit, 2, 1);
+	bgInit(1, Text256x256, Pal4bit, 2, 2);
+	
+	bgUpdate();
 		
 	spawn_mesh(0,1,1);
-	meshes[0].set_x(5);
-	meshes[0].set_y(10);
+	/*meshes[0].set_x(5);
+	meshes[0].set_y(10);*/
 	
-	spawn_mesh(2,5,10);
+	//spawn_mesh(2,5,10);
 	
-	user_controllable_mesh = new Mesh(meshes[1]);
-	meshes.remove_at(1);
+	//user_controllable_mesh = new Mesh(meshes[1]);
+	//meshes.remove_at(1);
 	/*meshes.push_back(_move_(Mesh(6,7,1,4,f2)));
 	meshes.push_back(_move_(Mesh(2,2,4,4,example)));
 	meshes.push_back(_move_(Mesh(8,7,1,4,f2)));*/
 }
 
+int k=0;
 void Board::frame()
 {
 	//greenSwapSwitch();	
@@ -137,11 +146,27 @@ void Board::frame()
 		draw_mesh(meshes[i]);
 	draw_mesh(*user_controllable_mesh);
 	
-	if(meshes.size()>0 && user_controllable_mesh != &meshes[0] && ((*user_controllable_mesh) || meshes[0]))
-	{
-		*user_controllable_mesh += meshes[0];
-		meshes.remove_at(0);
+	if(user_controllable_mesh && k==0)
+	{				
+		user_controllable_mesh->move(0,1);
+		if(!ucm_in_bounds())
+		{			
+			user_controllable_mesh->move(0,-1);
+			board_mesh+=*user_controllable_mesh;
+			if(board_mesh.coord_at(0,0)!=0)
+				FATAL_ERROR("Something happened");
+			delete user_controllable_mesh;
+			user_controllable_mesh = nullptr;
+		}
+		
+			
+		if(!user_controllable_mesh)
+		{
+			spawn_mesh(rand()%5, rand()%8, rand()%4);
+		}
 	}
+	k++;
+	if(k==10) k=0;	
 	//while(1) VBlankIntrWait();
 }
 

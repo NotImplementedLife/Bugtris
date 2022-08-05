@@ -6,6 +6,7 @@ Mesh::Mesh(int x, int y, int width, int height)
 	: _x(x), _y(y), _width(width), _height(height)
 {	
 	data = new u8[_width*_height];			
+	for(int i=0;i<_width*_height;i++) data[i]=0;
 }
 
 Mesh::Mesh(int x, int y, int width, int height, const u8* const source_table)
@@ -28,6 +29,7 @@ Mesh::Mesh(Mesh&& m) : _x(m._x), _y(m._y), _width(m._width), _height(m._height)
 {	
 	data = m.data;	
 	m.data = nullptr;
+	m._x = m._y = m._width = m._height = 0;
 }
 
 Mesh& Mesh::operator = (const Mesh& m)
@@ -56,6 +58,7 @@ Mesh& Mesh::operator = (Mesh&& m)
 void Mesh::resize(int new_width, int new_height, bool clear)
 {
 	u8* new_data = new u8[new_width*new_height];		
+	for(int i=0;i<new_width*new_height;i++) new_data[i]=0;
 	
 	if(!clear)
 	{
@@ -65,11 +68,11 @@ void Mesh::resize(int new_width, int new_height, bool clear)
 		for(int iy = 0; iy < mh; iy++)
 		{
 			for(int ix = 0; ix < mw; ix++)
-				new_data[_width * iy + ix] = data[_width * iy + ix];
+				new_data[new_width * iy + ix] = data[_width * iy + ix];
 		}	
 	}		
 	delete[] data;
-	data = new_data;	
+	data = new_data;				
 	_width = new_width;
 	_height = new_height;
 }
@@ -80,7 +83,7 @@ int Mesh::at(int px, int py) const
 }
 
 void Mesh::copy(const u8* src, int w, int h, int dx, int dy, bool overwrite)
-{
+{	
 	for(int iy = 0; iy < h; iy++)
 	{
 		for(int ix=0; ix < w; ix++)
@@ -97,7 +100,7 @@ void Mesh::copy(const u8* src, int w, int h, int dx, int dy, bool overwrite)
 }
 
 void Mesh::copy(const Mesh& src, int dx, int dy, bool overwrite)
-{
+{	
 	for(int iy = 0; iy < src.height(); iy++)
 	{
 		for(int ix=0; ix < src.width(); ix++)
@@ -130,7 +133,7 @@ Mesh& Mesh::operator += (const Mesh& rhs)
 	int x2 = max(x()+width(), rhs.x()+rhs.width());
 	int y2 = max(y()+height(), rhs.y()+rhs.height());
 		
-	Mesh m(*this);	
+	Mesh m=(Mesh&&)(*this);
 	
 	_x = x1;
 	_y = y1;
