@@ -1,0 +1,11 @@
+-gt
+-gB4
+
+# compress LZ77
+# -gzl
+
+-mR4
+
+-gTff00ff
+-pn16
+-mp8

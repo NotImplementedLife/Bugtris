@@ -42,6 +42,7 @@ Mesh& Mesh::operator = (const Mesh& m)
 	for(int i=0;i<_width*_height;i++)
 		data[i]=m.data[i];
 	return *this;
+	
 }
 
 Mesh& Mesh::operator = (Mesh&& m)
@@ -72,7 +73,7 @@ void Mesh::resize(int new_width, int new_height, bool clear)
 		}	
 	}		
 	delete[] data;
-	data = new_data;				
+	data = new_data;
 	_width = new_width;
 	_height = new_height;
 }
