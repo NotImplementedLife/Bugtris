@@ -8,8 +8,10 @@ using namespace Astralbrew::Video;
 #include "piece_tiles.h"
 #include "dialog-bg.h"
 #include "dialog-frame.h"
+#include "cappuccino.h"
 
 #include <stdlib.h>
+
 
 void Board::draw_mesh(const Mesh& mesh)
 {
@@ -109,22 +111,14 @@ bool Board::ucm_in_bounds()
 	return true;
 }
 
-void Board::init()
-{	
+
+void Board::init_board_table()
+{
 	Address transparent_tile;
 	vram_chr_1.reserve(&transparent_tile, 64);
-	//vram_chr_2.reserve(&transparent_tile, 32);
-	vram_chr_3.reserve(&transparent_tile, 32);
-	
 	vram_chr_1.reserve(&board_bg_addr, board_bgTilesLen);
 	vram_chr_1.reserve(&piece_bg_addr, piece_tilesTilesLen);		
 	
-	vram_chr_2.reserve(&frame_bg_addr, dialog_frameTilesLen);
-	vram_chr_2.reserve(&dialog_txt_addr, tiles_size_8bpp(4*23));	
-	
-	//Address dialog_bg_addr;	
-
-	Video::setMode(0);
 	bgInit(3, Text256x256, Pal8bit, 1, 0);
 	bgWrap(3);
 	
@@ -138,34 +132,63 @@ void Board::init()
 	copyTiles256(piece_tilesTiles, piece_bg_addr.get_value(), piece_tilesTilesLen, piece_tilesPal, piece_tilesPalLen, 64);
 	
 	bgSetScroll(3, 8, 48);
+}
+
+void Board::init_dialog_bg()
+{		
+	vram_chr_3.reserve(&dialog_bg_addr, dialog_bgTilesLen);
 	
-	bgInit(0, Text256x256, Pal4bit, 2, 1);
 	bgInit(1, Text256x256, Pal4bit, 3, 2);
 	
-	dmaCopy(dialog_bgTiles, bgGetTilesPtr(1), dialog_bgTilesLen);
+	dmaCopy(dialog_bgTiles, dialog_bg_addr.get_value(), dialog_bgTilesLen);
 	dmaCopy(dialog_bgMap, bgGetMapPtr(1)+32*14, dialog_bgMapLen);
-	dmaCopy(dialog_bgPal, BG_PALETTE_BANK(8), dialog_bgPalLen);
+	dmaCopy(dialog_bgPal, BG_PALETTE_BANK(8), dialog_bgPalLen);	
+}
+
+void Board::init_dialog_fg()
+{	
+	vram_chr_2.reserve(&frame_bg_addr, dialog_frameTilesLen);
+	vram_chr_2.reserve(&dialog_txt_addr, tiles_size_8bpp(4*23));		
+	vram_chr_2.reserve(&char_pic_addr, tiles_size_8bpp(4*4));		
+	
+	bgInit(0, Text256x256, Pal4bit, 2, 1);
 	
 	dmaCopy(dialog_frameTiles, frame_bg_addr.get_value(), dialog_frameTilesLen);
 	dmaCopy(dialog_frameMap, bgGetMapPtr(0)+32*11, dialog_frameMapLen);
 	dmaCopy(dialog_framePal, BG_PALETTE_BANK(7), dialog_framePalLen);
 	
 	vwf.set_render_space(dialog_txt_addr.get_value(),4,23);
-	VwfEngine::prepare_map(vwf, bgGetMapPtr(0), 32, 6, 15);
-			
-	vwf.put_char('A', Pal4bit);
-	vwf.put_char('B', Pal4bit);
-	vwf.put_char('C', Pal4bit);
+	VwfEngine::prepare_map(vwf, bgGetMapPtr(0), 32, 6, 15, 0x9);	
+	BG_PALETTE[0x9F] = Colors::Yellow;	
+	
+	set_dialog_character(nullptr, nullptr);
+	set_dialog_character(cappuccinoTiles, cappuccinoPal);
+	
+	int character_tid = bgTileId(char_pic_addr.get_value(), 0);
+	
+	for(int y=0;y<4;y++)
+	{
+		for(int x=0;x<4;x++)
+		{
+			bgGetMapPtr(0)[32*(15+y)+1+x]=0xA000 | (character_tid++);
+		}
+	}
+}
+
+void Board::init()
+{			
+	Video::setMode(0);
+	init_board_table();
+	init_dialog_bg();
+	init_dialog_fg();		
+	
+	vwf.put_text("Lalalala",Pal4bit);
 	
 	bgSetAlpha(1, 6, 3, 8);
 	
 	bgUpdate();
 		
 	spawn_mesh(0,1,1);
-	/*meshes[0].set_x(5);
-	meshes[0].set_y(10);*/
-	
-	//spawn_mesh(2,5,10);	
 }
 
 int k=0;
@@ -248,6 +271,18 @@ void Board::on_key_down(int keys)
 			}
 		}
 	}
+}
+
+void Board::set_dialog_character(const void* tiles, const void* palette)
+{
+	if(tiles==nullptr)
+	{
+		for(int i=0;i<16;i++) BG_PALETTE[0xA0+i]=0;
+		return;
+	}
+	dmaCopy(palette, BG_PALETTE_BANK(0xA), 32);
+	dmaCopy(tiles, char_pic_addr.get_value(), 4*4*32);
+	
 }
 
 Board::~Board()

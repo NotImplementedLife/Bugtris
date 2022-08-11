@@ -26,6 +26,7 @@ private:
 	Address piece_bg_addr;
 	Address dialog_bg_addr;
 	Address frame_bg_addr;
+	Address char_pic_addr;
 	
 	Address dialog_txt_addr;
 		
@@ -36,6 +37,12 @@ private:
 	void spawn_mesh(int gid, int color, int shape);
 	
 	bool ucm_in_bounds();
+	
+	void set_dialog_character(const void* tiles, const void* palette);
+	
+	void init_board_table();
+	void init_dialog_bg();
+	void init_dialog_fg();
 public:
 	virtual void init() override;	
 	
