@@ -29,8 +29,10 @@ private:
 	Address char_pic_addr;
 	
 	Address dialog_txt_addr;
+	Address dialog_title_addr;
 		
-	VwfEngine vwf = VwfEngine(Astralbrew::Resources::Fonts::default_8x16);
+	VwfEngine vwf_title = VwfEngine(Astralbrew::Resources::Fonts::default_8x16);
+	VwfEngine vwf_body = VwfEngine(Astralbrew::Resources::Fonts::default_8x16);
 	
 	void clear();
 	void draw_mesh(const Mesh& mesh);
@@ -43,6 +45,9 @@ private:
 	void init_board_table();
 	void init_dialog_bg();
 	void init_dialog_fg();
+	
+	void show_dialog(const char* actor_name, const char* message);
+	
 public:
 	virtual void init() override;	
 	
