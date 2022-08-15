@@ -52,5 +52,7 @@ public:
 	void rotate_cw();
 	void rotate_ccw();
 	
+	int clear_full_lines(int w);
+	
 	~Mesh();
 };

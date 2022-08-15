@@ -28,14 +28,16 @@ void Board::init()
 void Board::frame()
 {	
 	process_dialog();
+	
+	clear();
+	draw_mesh(board_mesh);
+	for(int i=0;i<meshes.size();i++)
+		draw_mesh(meshes[i]);
+	draw_mesh(*user_controllable_mesh);
+		
 	if(frame_cnt==0) 
 	{	
 		//greenSwapSwitch();
-		clear();
-		draw_mesh(board_mesh);
-		for(int i=0;i<meshes.size();i++)
-			draw_mesh(meshes[i]);
-		draw_mesh(*user_controllable_mesh);
 		
 		if(user_controllable_mesh)
 		{				
@@ -43,29 +45,32 @@ void Board::frame()
 			if(!ucm_in_bounds())
 			{			
 				user_controllable_mesh->move(0,-1);
-				board_mesh+=*user_controllable_mesh;
-				//if(board_mesh.coord_at(0,0)!=0)
-					//FATAL_ERROR("Something happened");
+				board_mesh+=*user_controllable_mesh;						
+				score=board_mesh.clear_full_lines(10);				
+				set_score(score);
+				
 				delete user_controllable_mesh;
 				user_controllable_mesh = nullptr;
 			}			
 				
 			if(!user_controllable_mesh)
 			{
-				spawn_mesh(rand()%5, rand()%8, rand()%4);
+				spawn_mesh(rand()%6, rand()%8, rand()%4);
 			}
 		}	
-	}
+	}	
+	frame_key_control = 0;
 	frame_cnt++;
-	if(frame_cnt==20) {
+	if(frame_cnt==30) {
 		frame_cnt=0;
 	}
 }
 
 void Board::on_key_down(int keys)
-{
-	if(keys & KEY_LEFT)
-	{
+{	
+	if((keys & KEY_LEFT) && !(frame_key_control & KEY_LEFT))
+	{		
+		frame_key_control |= KEY_LEFT;
 		if(user_controllable_mesh)
 		{			
 			user_controllable_mesh->move(-move_direction,0);
@@ -75,8 +80,9 @@ void Board::on_key_down(int keys)
 			}
 		}
 	}	
-	else if(keys & KEY_RIGHT)
+	else if(keys & KEY_RIGHT && !(frame_key_control & KEY_RIGHT))
 	{
+		frame_key_control |= KEY_RIGHT;
 		if(user_controllable_mesh)
 		{			
 			user_controllable_mesh->move(+move_direction,0);
@@ -86,6 +92,22 @@ void Board::on_key_down(int keys)
 			}
 		}
 	}
+	if(keys & KEY_UP && !(frame_key_control & KEY_UP))
+	{
+		frame_key_control |= KEY_UP;
+		if(user_controllable_mesh)
+		{			
+			user_controllable_mesh->rotate_cw();			
+			if(!ucm_in_bounds())
+			{
+				user_controllable_mesh->rotate_ccw();
+			}
+		}
+	}
+}
+
+void Board::on_key_held(int keys)
+{
 	if(keys & KEY_DOWN)
 	{
 		if(user_controllable_mesh)
@@ -94,18 +116,6 @@ void Board::on_key_down(int keys)
 			if(!ucm_in_bounds())
 			{
 				user_controllable_mesh->move(0,-move_direction);
-			}
-		}
-	}
-	else if(keys & KEY_UP)
-	{
-		if(user_controllable_mesh)
-		{			
-			user_controllable_mesh->rotate_cw();
-			//user_controllable_mesh->move(0,-1);
-			if(!ucm_in_bounds())
-			{
-				user_controllable_mesh->rotate_ccw();
 			}
 		}
 	}

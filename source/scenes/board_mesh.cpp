@@ -22,7 +22,7 @@ void Board::draw_mesh(const Mesh& mesh)
 	}
 }
 
-static const u8 mesh_gfx[5][16] = 
+static const u8 mesh_gfx[6][16] = 
 {
 	{
 		0,1,0,0,
@@ -51,6 +51,12 @@ static const u8 mesh_gfx[5][16] =
 	{
 		0,1,1,0,
 		0,0,1,0,
+		0,0,1,0,
+		0,0,0,0,
+	},
+	{
+		0,0,0,0,
+		0,1,1,1,
 		0,0,1,0,
 		0,0,0,0,
 	},

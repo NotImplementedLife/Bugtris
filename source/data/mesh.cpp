@@ -1,5 +1,7 @@
 #include "data/mesh.hpp"
 
+using namespace Astralbrew;
+
 Mesh::Mesh() : _x(0), _y(0), _width(0), _height(0) { data = nullptr; }
 
 Mesh::Mesh(int x, int y, int width, int height)
@@ -63,8 +65,8 @@ void Mesh::resize(int new_width, int new_height, bool clear)
 	
 	if(!clear)
 	{
-		int mw = _width<new_width ? _width : new_width;
-		int mh = _height<new_height ? _height : new_height;
+		int mw = min(_width, new_width);
+		int mh = min(_height,new_height);
 		
 		for(int iy = 0; iy < mh; iy++)
 		{
@@ -124,9 +126,6 @@ int Mesh::coord_at(int cx, int cy) const
 	return data[(cy-y())*width() + cx-x()];
 }
 
-#define max(a,b) ((a)>(b) ? (a):(b))
-#define min(a,b) ((a)<(b) ? (a):(b))
-
 Mesh& Mesh::operator += (const Mesh& rhs)
 {
 	int x1 = min(x(), rhs.x());
@@ -141,6 +140,7 @@ Mesh& Mesh::operator += (const Mesh& rhs)
 	resize(x2-x1, y2-y1, true);
 	copy(m, m.x()-x1, m.y()-y1);
 	copy(rhs, rhs.x()-x1, rhs.y()-y1);
+		
 	return *this;
 }
 
@@ -189,11 +189,6 @@ void Mesh::replace(int v, int w)
 	}
 }
 
-Mesh::~Mesh()
-{	
-	delete[] data;
-}
-
 void Mesh::rotate_ccw()
 {	
 	assert(width()==height());
@@ -210,7 +205,7 @@ void Mesh::rotate_ccw()
 				data[(L-ix)* width() + iy  ]
 			);
 		}
-	}		
+	}
 }
 
 void Mesh::rotate_cw()
@@ -232,4 +227,40 @@ void Mesh::rotate_cw()
 	}		
 }
 
+int Mesh::clear_full_lines(int w)
+{		
+	if(width()<w) return 0;	
+		
+	
+	int result=0;
+	for(int iy=height()-1;iy>=0;iy--) 
+	{
+		int count=0;
+		for(int ix=0;ix<width();ix++)
+			if(data[iy*width()+ix]) count++;
+		if(count==w)
+		{
+			result++;
+		
+			for(int jy=iy; jy>0; jy--) 
+			{
+				for(int ix=0;ix<width();ix++) 
+				{
+					data[jy*width()+ix] = data[(jy-1)*width()+ix];
+				}
+			}	
+			for(int ix=0;ix<width();ix++) 
+			{
+				data[ix] = 0;
+			}
+			iy++;
+		}
+	}	
+	return result;
+}
+
+Mesh::~Mesh()
+{	
+	delete[] data;
+}
 

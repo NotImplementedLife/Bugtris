@@ -11,8 +11,9 @@ using Astralbrew::Text::ReadOnlyFont;
 class Board : public Astralbrew::World::Scene
 {
 private:
+	char id[10]="Board";
 	Astralbrew::Vector<Mesh> meshes;
-	Mesh board_mesh;
+	Mesh board_mesh = Mesh(0,0,10,18);
 	Mesh* user_controllable_mesh = NULL;
 	
 	VramManager vram_chr_1 = VramManager::from_char_block(1);	
@@ -53,6 +54,9 @@ private:
 	void hide_dialog();
 	
 	int frame_cnt=0;
+	int frame_key_control = 0;
+	
+	int score=0;
 		
 	const char* dialog_stream = nullptr;
 	
@@ -62,6 +66,7 @@ private:
 	
 private:
 	int move_direction = 1;		
+	bool clear_lines = false;
 	
 public:
 	virtual void init() override;	
@@ -69,6 +74,7 @@ public:
 	virtual void frame() override;
 	
 	virtual void on_key_down(int keys) override;
+	virtual void on_key_held(int keys) override;
 	
 	~Board();
 };
