@@ -9,6 +9,7 @@ using namespace Astralbrew::Video;
 #include "piece_tiles.h"
 #include "dialog-bg.h"
 #include "dialog-frame.h"
+#include "digits.h"
 
 void Board::init_board_table()
 {
@@ -16,6 +17,7 @@ void Board::init_board_table()
 	vram_chr_1.reserve(&transparent_tile, 64);
 	vram_chr_1.reserve(&board_bg_addr, board_bgTilesLen);
 	vram_chr_1.reserve(&piece_bg_addr, piece_tilesTilesLen);		
+	vram_chr_1.reserve(&digits_addr, digitsTilesLen);
 	
 	bgInit(3, Text256x256, Pal8bit, 1, 0);
 	bgWrap(3);
@@ -27,7 +29,13 @@ void Board::init_board_table()
 		
 	for(int i=0;i<32;i++) bgGetTilesPtr(3)[i]=0x3F3F; // black color that is not on transparent index
 	
+	
+	
 	copyTiles256(piece_tilesTiles, piece_bg_addr.get_value(), piece_tilesTilesLen, piece_tilesPal, piece_tilesPalLen, 64);
+	
+	copyTiles256(digitsTiles, digits_addr.get_value(), digitsTilesLen, digitsPal, digitsPalLen, 0xB0);
+	
+	digit0tileid = ((int)digits_addr.get_value() - (int)bgGetTilesPtr(3))/64+1;
 	
 	bgSetScroll(3, 8, 48);
 }

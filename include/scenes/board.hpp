@@ -27,6 +27,8 @@ private:
 	Address dialog_bg_addr;
 	Address frame_bg_addr;
 	Address char_pic_addr;
+	Address digits_addr;
+	int digit0tileid=0;
 	
 	Address dialog_txt_addr;
 	Address dialog_title_addr;
@@ -55,6 +57,8 @@ private:
 	const char* dialog_stream = nullptr;
 	
 private:
+	void set_goal(int val);
+	void set_score(int val);
 	
 	
 public:

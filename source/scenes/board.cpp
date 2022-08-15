@@ -12,16 +12,17 @@ void Board::init()
 	init_board_table();
 	init_dialog_bg();
 	init_dialog_fg();		
-	
-	show_dialog("Cappuccino", "Hi there! My name is Oak and welcome to the world of Pokemon. How to write the word beach?");	
-	//show_dialog("Cappuccino", w);
-	//show_dialog(nullptr, nullptr);
+
+	hide_dialog();
 	
 	bgSetAlpha(1, 6, 3, 8);
 	
 	bgUpdate();
 		
 	spawn_mesh(0,1,1);
+	
+	set_goal(0);
+	set_score(0);
 }
 
 void Board::frame()
@@ -57,7 +58,7 @@ void Board::frame()
 		}	
 	}
 	frame_cnt++;
-	if(frame_cnt==9) {
+	if(frame_cnt==20) {
 		frame_cnt=0;
 	}
 }
@@ -108,6 +109,26 @@ void Board::on_key_down(int keys)
 			}
 		}
 	}
+}
+
+void Board::set_goal(int val)
+{
+	u16* map = bgGetMapPtr(3)+9*32+28;
+	for(int i=0;i<4;i++) 
+	{
+		*(map--)=digit0tileid+val%10;
+		val/=10;
+	}
+}
+
+void Board::set_score(int val)
+{
+	u16* map = bgGetMapPtr(3)+11*32+28;
+	for(int i=0;i<4;i++) 
+	{
+		*(map--)=digit0tileid+val%10;
+		val/=10;
+	}	
 }
 
 Board::~Board()

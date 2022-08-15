@@ -38,8 +38,7 @@ void Board::process_dialog()
 		{
 			wait_for_key_pressed(KEY_A);
 		}
-	}	
-	
+	}		
 }
 
 void Board::set_dialog_character(const void* tiles, const void* palette)
