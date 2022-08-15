@@ -47,6 +47,15 @@ private:
 	void init_dialog_fg();
 	
 	void show_dialog(const char* actor_name, const char* message);
+	void process_dialog();
+	void hide_dialog();
+	
+	int frame_cnt=0;
+		
+	const char* dialog_stream = nullptr;
+	
+private:
+	
 	
 public:
 	virtual void init() override;	

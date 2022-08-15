@@ -13,7 +13,8 @@ void Board::init()
 	init_dialog_bg();
 	init_dialog_fg();		
 	
-	show_dialog("Cappuccino", "Hi there!");	
+	show_dialog("Cappuccino", "Hi there! My name is Oak and welcome to the world of Pokemon. How to write the word beach?");	
+	//show_dialog("Cappuccino", w);
 	//show_dialog(nullptr, nullptr);
 	
 	bgSetAlpha(1, 6, 3, 8);
@@ -24,34 +25,41 @@ void Board::init()
 }
 
 void Board::frame()
-{
-	//greenSwapSwitch();	
-	clear();
-	draw_mesh(board_mesh);
-	for(int i=0;i<meshes.size();i++)
-		draw_mesh(meshes[i]);
-	draw_mesh(*user_controllable_mesh);
-	
-	if(user_controllable_mesh)
-	{				
-		user_controllable_mesh->move(0,1);
-		if(!ucm_in_bounds())
-		{			
-			user_controllable_mesh->move(0,-1);
-			board_mesh+=*user_controllable_mesh;
-			//if(board_mesh.coord_at(0,0)!=0)
-				//FATAL_ERROR("Something happened");
-			delete user_controllable_mesh;
-			user_controllable_mesh = nullptr;
-		}
+{	
+	process_dialog();
+	if(frame_cnt==0) 
+	{	
+		//greenSwapSwitch();
+		clear();
+		draw_mesh(board_mesh);
+		for(int i=0;i<meshes.size();i++)
+			draw_mesh(meshes[i]);
+		draw_mesh(*user_controllable_mesh);
 		
+		if(user_controllable_mesh)
+		{				
+			user_controllable_mesh->move(0,1);
+			if(!ucm_in_bounds())
+			{			
+				user_controllable_mesh->move(0,-1);
+				board_mesh+=*user_controllable_mesh;
+				//if(board_mesh.coord_at(0,0)!=0)
+					//FATAL_ERROR("Something happened");
+				delete user_controllable_mesh;
+				user_controllable_mesh = nullptr;
+			}
 			
-		if(!user_controllable_mesh)
-		{
-			spawn_mesh(rand()%5, rand()%8, rand()%4);
-		}
-	}	
-	for(int k=9;k--;) VBlankIntrWait();
+				
+			if(!user_controllable_mesh)
+			{
+				spawn_mesh(rand()%5, rand()%8, rand()%4);
+			}
+		}	
+	}
+	frame_cnt++;
+	if(frame_cnt==9) {
+		frame_cnt=0;
+	}
 }
 
 void Board::on_key_down(int keys)
