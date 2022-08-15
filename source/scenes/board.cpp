@@ -48,8 +48,7 @@ void Board::frame()
 					//FATAL_ERROR("Something happened");
 				delete user_controllable_mesh;
 				user_controllable_mesh = nullptr;
-			}
-			
+			}			
 				
 			if(!user_controllable_mesh)
 			{
@@ -69,10 +68,10 @@ void Board::on_key_down(int keys)
 	{
 		if(user_controllable_mesh)
 		{			
-			user_controllable_mesh->move(-1,0);
+			user_controllable_mesh->move(-move_direction,0);
 			if(!ucm_in_bounds())
 			{
-				user_controllable_mesh->move(+1,0);
+				user_controllable_mesh->move(+move_direction,0);
 			}
 		}
 	}	
@@ -80,10 +79,10 @@ void Board::on_key_down(int keys)
 	{
 		if(user_controllable_mesh)
 		{			
-			user_controllable_mesh->move(+1,0);
+			user_controllable_mesh->move(+move_direction,0);
 			if(!ucm_in_bounds())
 			{
-				user_controllable_mesh->move(-1,0);
+				user_controllable_mesh->move(-move_direction,0);
 			}
 		}
 	}
@@ -91,10 +90,10 @@ void Board::on_key_down(int keys)
 	{
 		if(user_controllable_mesh)
 		{			
-			user_controllable_mesh->move(0,1);
+			user_controllable_mesh->move(0,move_direction);
 			if(!ucm_in_bounds())
 			{
-				user_controllable_mesh->move(0,-1);
+				user_controllable_mesh->move(0,-move_direction);
 			}
 		}
 	}
@@ -102,10 +101,11 @@ void Board::on_key_down(int keys)
 	{
 		if(user_controllable_mesh)
 		{			
-			user_controllable_mesh->move(0,-1);
+			user_controllable_mesh->rotate_cw();
+			//user_controllable_mesh->move(0,-1);
 			if(!ucm_in_bounds())
 			{
-				user_controllable_mesh->move(0,1);
+				user_controllable_mesh->rotate_ccw();
 			}
 		}
 	}

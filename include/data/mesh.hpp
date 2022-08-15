@@ -49,5 +49,8 @@ public:
 	
 	void move(int _x, int _y) { set_x(x()+_x); set_y(y()+_y); } 
 	
+	void rotate_cw();
+	void rotate_ccw();
+	
 	~Mesh();
 };

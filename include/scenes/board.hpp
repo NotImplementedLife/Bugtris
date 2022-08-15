@@ -60,6 +60,8 @@ private:
 	void set_goal(int val);
 	void set_score(int val);
 	
+private:
+	int move_direction = 1;		
 	
 public:
 	virtual void init() override;	

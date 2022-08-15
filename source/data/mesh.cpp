@@ -194,4 +194,42 @@ Mesh::~Mesh()
 	delete[] data;
 }
 
+void Mesh::rotate_ccw()
+{	
+	assert(width()==height());
+	
+	const int L = width()-1;
+	for(int iy=0;iy<=L/2;iy++) 
+	{
+		for(int ix=0;ix<=L/2;ix++)
+		{
+			Astralbrew::circular_perm_left(
+				data[  iy  * width() + ix  ],
+				data[  ix  * width() + L-iy],
+				data[(L-iy)* width() + L-ix],
+				data[(L-ix)* width() + iy  ]
+			);
+		}
+	}		
+}
+
+void Mesh::rotate_cw()
+{
+	assert(width()==height());
+	
+	const int L = width()-1;
+	for(int iy=0;iy<=L/2;iy++) 
+	{
+		for(int ix=0;ix<=L/2;ix++)
+		{
+			Astralbrew::circular_perm_left(
+				data[(L-ix)* width() + iy  ],
+				data[(L-iy)* width() + L-ix],
+				data[  ix  * width() + L-iy],
+				data[  iy  * width() + ix  ]					
+			);
+		}
+	}		
+}
+
 
