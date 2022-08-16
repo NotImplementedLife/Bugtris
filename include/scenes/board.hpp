@@ -49,10 +49,6 @@ private:
 	void init_dialog_bg();
 	void init_dialog_fg();
 	
-	void show_dialog(const char* actor_name, const char* message);
-	void process_dialog();
-	void hide_dialog();
-	
 	int frame_cnt=0;
 	int frame_key_control = 0;
 	
@@ -60,14 +56,23 @@ private:
 		
 	const char* dialog_stream = nullptr;
 	
-private:
+	void process_dialog();
+	
+protected:
+	void show_dialog(const char* actor_name, const char* message);	
+	void hide_dialog();
+	
+protected:
 	void set_goal(int val);
 	void set_score(int val);
 	
-private:
+protected:
 	int move_direction = 1;		
 	bool clear_lines = false;
-	
+
+public:
+	virtual void on_full_lines_count(int value) { }
+
 public:
 	virtual void init() override;	
 	

@@ -1,3 +1,3 @@
-#include "board.hpp"
+#include "levels/level1.hpp"
 
-astralbrew_launch(Board);
+astralbrew_launch(Level1);

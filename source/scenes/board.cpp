@@ -45,9 +45,20 @@ void Board::frame()
 			if(!ucm_in_bounds())
 			{			
 				user_controllable_mesh->move(0,-1);
-				board_mesh+=*user_controllable_mesh;						
-				score=board_mesh.clear_full_lines(10);				
-				set_score(score);
+				board_mesh+=*user_controllable_mesh;		
+
+				if(clear_lines) 
+				{
+					score=board_mesh.clear_full_lines(10);				
+					set_score(score);
+				}
+				else
+				{					
+					int lines=board_mesh.count_full_lines(10);
+					on_full_lines_count(lines);
+					//score=board_mesh.count_full_lines(10);
+					//set_score(score);
+				}					
 				
 				delete user_controllable_mesh;
 				user_controllable_mesh = nullptr;

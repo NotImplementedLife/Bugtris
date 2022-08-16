@@ -259,6 +259,25 @@ int Mesh::clear_full_lines(int w)
 	return result;
 }
 
+int Mesh::count_full_lines(int w) const
+{
+	if(width()<w) return 0;	
+		
+	
+	int result=0;
+	for(int iy=height()-1;iy>=0;iy--) 
+	{
+		int count=0;
+		for(int ix=0;ix<width();ix++)
+			if(data[iy*width()+ix]) count++;
+		if(count==w)
+		{
+			result++;			
+		}
+	}	
+	return result;
+}
+
 Mesh::~Mesh()
 {	
 	delete[] data;
