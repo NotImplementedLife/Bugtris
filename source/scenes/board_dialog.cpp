@@ -4,7 +4,7 @@
 using namespace Astralbrew::Drawing;
 using namespace Astralbrew::Video;
 
-void Board::show_dialog(const char* actor_name, const char* message)
+void Board::show_dialog(const char* actor_name, const char* message, void (*callback)(void*))
 {	
 	bgShow(0);
 	bgShow(1);	
@@ -14,6 +14,7 @@ void Board::show_dialog(const char* actor_name, const char* message)
 	vwf_title.put_text(actor_name, Pal4bit, SolidColorBrush(0xE));
 	
 	dialog_stream = message;
+	dialog_callback = callback;
 }
 
 void Board::hide_dialog()
@@ -33,6 +34,11 @@ void Board::process_dialog()
 		{
 			dialog_stream=nullptr;		
 			hide_dialog();
+			if(dialog_callback)
+			{
+				dialog_callback(this);
+				dialog_callback = 0;
+			}
 		}
 		else
 		{

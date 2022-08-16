@@ -55,9 +55,7 @@ void Board::frame()
 				else
 				{					
 					int lines=board_mesh.count_full_lines(10);
-					on_full_lines_count(lines);
-					//score=board_mesh.count_full_lines(10);
-					//set_score(score);
+					on_full_lines_count(lines);					
 				}					
 				
 				delete user_controllable_mesh;
@@ -75,6 +73,19 @@ void Board::frame()
 	if(frame_cnt==30) {
 		frame_cnt=0;
 	}
+}
+
+void Board::blank_skip(int frames_cnt) const
+{
+	for(int i=frames_cnt;i--;)
+	{		
+		VBlankIntrWait();
+	}
+}
+
+void Board::inc_score(int amount)
+{
+	set_score(score+amount);
 }
 
 void Board::on_key_down(int keys)
@@ -133,7 +144,8 @@ void Board::on_key_held(int keys)
 }
 
 void Board::set_goal(int val)
-{
+{	
+	goal = val;
 	u16* map = bgGetMapPtr(3)+9*32+28;
 	for(int i=0;i<4;i++) 
 	{
@@ -144,6 +156,7 @@ void Board::set_goal(int val)
 
 void Board::set_score(int val)
 {
+	score = val;
 	u16* map = bgGetMapPtr(3)+11*32+28;
 	for(int i=0;i<4;i++) 
 	{

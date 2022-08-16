@@ -52,31 +52,39 @@ private:
 	int frame_cnt=0;
 	int frame_key_control = 0;
 	
-	int score=0;
+	int goal = 0;
+	int score = 0;
 		
 	const char* dialog_stream = nullptr;
 	
 	void process_dialog();
 	
+	void (*dialog_callback)(void*) = 0;
 protected:
-	void show_dialog(const char* actor_name, const char* message);	
+	void show_dialog(const char* actor_name, const char* message, void (*callback)(void*) = 0);
 	void hide_dialog();
 	
 protected:
 	void set_goal(int val);
 	void set_score(int val);
 	
+	int get_goal() const { return goal; }
+	int get_score() const { return score; }
 protected:
 	int move_direction = 1;		
 	bool clear_lines = false;
 
 public:
 	virtual void on_full_lines_count(int value) { }
+	
+public:
+	void inc_score(int amount);
+	void blank_skip(int frames_cnt) const;
 
 public:
 	virtual void init() override;	
 	
-	virtual void frame() override;
+	virtual void frame() override;	
 	
 	virtual void on_key_down(int keys) override;
 	virtual void on_key_held(int keys) override;
