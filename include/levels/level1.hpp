@@ -15,7 +15,7 @@ public:
 		virtual void action() override
 		{
 			level->blank_skip(60);			
-			level->show_dialog("Cappuccino","It's a full line! It should disappear.\nWhy is it not working?\nHmmm...");
+			level->show_dialog("Cappuccino", "It's a full line! It should disappear.\nWhy is it not working?\nHmmm...");
 		}
 	};
 	
@@ -28,7 +28,7 @@ public:
 		
 		virtual void action() override
 		{
-			level->blank_skip(60);			
+			level->blank_skip(60);
 			level->show_dialog("Cappuccino", "Alright, that's enough. I gathered all the data I needed.",
 				[](void* self)
 				{

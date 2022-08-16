@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bob.h"
 #include "cappuccino.h"
 #include <string.h>
 
@@ -69,5 +70,6 @@ struct _CatsPicsCollection
 
 constexpr _CatsPicsCollection CatsPics 
 {{
-	{"Cappuccino", cappuccinoTiles, cappuccinoPal}
+	{"Cappuccino", cappuccinoTiles, cappuccinoPal},
+	{"Bob", bobTiles, bobPal},
 }};
