@@ -19,7 +19,7 @@ void Board::init()
 	
 	bgUpdate();
 		
-	spawn_mesh(0,1,1);
+	//spawn_mesh(0,1,1);
 	
 	set_goal(0);
 	set_score(0);
@@ -32,15 +32,17 @@ void Board::frame()
 	clear();
 	draw_mesh(board_mesh);
 	for(int i=0;i<meshes.size();i++)
-		draw_mesh(meshes[i]);
-	draw_mesh(*user_controllable_mesh);
+		draw_mesh(meshes[i]);	
+	
+	if(user_controllable_mesh)
+		draw_mesh(*user_controllable_mesh);
 		
 	if(frame_cnt==0) 
 	{	
 		//greenSwapSwitch();
 		
 		if(user_controllable_mesh)
-		{				
+		{							
 			user_controllable_mesh->move(0,1);
 			if(!ucm_in_bounds())
 			{			
@@ -60,13 +62,12 @@ void Board::frame()
 				
 				delete user_controllable_mesh;
 				user_controllable_mesh = nullptr;
-			}			
-				
-			if(!user_controllable_mesh)
-			{
-				spawn_mesh(rand()%6, rand()%8, rand()%4);
-			}
+			}						
 		}	
+		if(!user_controllable_mesh)
+		{
+			spawn_mesh(rand()%6, rand()%8, rand()%4);
+		}
 	}	
 	frame_key_control = 0;
 	frame_cnt++;

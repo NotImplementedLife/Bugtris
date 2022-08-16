@@ -60,8 +60,9 @@ private:
 	void process_dialog();
 	
 	void (*dialog_callback)(void*) = 0;
-protected:
-	void show_dialog(const char* actor_name, const char* message, void (*callback)(void*) = 0);
+protected:	
+	void show_dialog(const char* actor_name, const char* message, void (*callback)(void*) = 0);	
+	
 	void hide_dialog();
 	
 protected:
@@ -74,7 +75,7 @@ protected:
 	int move_direction = 1;		
 	bool clear_lines = false;
 
-public:
+public:	
 	virtual void on_full_lines_count(int value) { }
 	
 public:

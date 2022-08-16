@@ -45,12 +45,13 @@ public:
 	{		
 		first_full_line_action.set_level(this);		
 		goal_reached_action.set_level(this);		
-	}
+	}	
 	
 	virtual void init() override
 	{
 		Board::init();
 		set_goal(5);
+		show_dialog("Cappuccino", "Let's start");
 	}
 	
 	virtual void on_full_lines_count(int value) override
