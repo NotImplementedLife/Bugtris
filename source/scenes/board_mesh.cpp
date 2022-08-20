@@ -68,6 +68,11 @@ void Board::spawn_mesh(int gid, int color, int shape)
 	user_controllable_mesh->replace(1, mk_block(color, shape));
 }
 
+void Board::spawn_mesh(const Piece& piece)
+{
+	spawn_mesh(piece.g_id, piece.color, piece.shape);
+}
+
 void Board::clear()
 {
 	u16* map = ((u16*)MAP_BASE_ADR(0)) + 7*32 + 11;

@@ -6,6 +6,8 @@ using namespace Astralbrew::Video;
 
 #include <stdlib.h>
 
+PieceGenerator default_piece_generator = PieceGenerator();
+
 void Board::init()
 {			
 	Video::setMode(0);
@@ -51,8 +53,8 @@ void Board::frame()
 
 				if(clear_lines) 
 				{
-					score=board_mesh.clear_full_lines(10);				
-					set_score(score);
+					score += board_mesh.clear_full_lines(10);
+					set_score(score);					
 				}
 				else
 				{					
@@ -66,7 +68,7 @@ void Board::frame()
 		}	
 		if(!user_controllable_mesh)
 		{
-			spawn_mesh(rand()%6, rand()%8, rand()%4);
+			spawn_mesh(get_piece_generator()->next());
 		}
 	}	
 	frame_key_control = 0;
@@ -91,6 +93,11 @@ void Board::inc_score(int amount)
 
 void Board::on_key_down(int keys)
 {	
+	if((keys & KEY_START))
+	{		
+		this->close()->next(new Board());
+		FATAL_ERROR("Entrypoint jump missed");
+	}
 	if((keys & KEY_LEFT) && !(frame_key_control & KEY_LEFT))
 	{		
 		frame_key_control |= KEY_LEFT;
@@ -157,6 +164,7 @@ void Board::set_goal(int val)
 
 void Board::set_score(int val)
 {
+	int old_val = val;
 	score = val;
 	u16* map = bgGetMapPtr(3)+11*32+28;
 	for(int i=0;i<4;i++) 
@@ -164,6 +172,10 @@ void Board::set_score(int val)
 		*(map--)=digit0tileid+val%10;
 		val/=10;
 	}	
+	if(old_val!=val)
+	{
+		on_score_changed(old_val);
+	}
 }
 
 Board::~Board()

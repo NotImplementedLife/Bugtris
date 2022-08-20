@@ -2,11 +2,15 @@
 
 #include <AstralbrewLib>
 #include "data/mesh.hpp"
+#include "data/piece.hpp"
+#include "data/piece_gen.hpp"
 
 using Astralbrew::Text::VwfEngine;
 using Astralbrew::Memory::Address;
 using Astralbrew::Memory::VramManager;
 using Astralbrew::Text::ReadOnlyFont;
+
+extern PieceGenerator default_piece_generator;
 
 class Board : public Astralbrew::World::Scene
 {
@@ -40,6 +44,7 @@ private:
 	void clear();
 	void draw_mesh(const Mesh& mesh);
 	void spawn_mesh(int gid, int color, int shape);
+	void spawn_mesh(const Piece& piece);
 	
 	bool ucm_in_bounds();
 	
@@ -60,12 +65,14 @@ private:
 	void process_dialog();
 	
 	void (*dialog_callback)(void*) = 0;
-protected:	
+	
+	PieceGenerator* _piece_generator = &default_piece_generator;
+public:	
 	void show_dialog(const char* actor_name, const char* message, void (*callback)(void*) = 0);	
 	
 	void hide_dialog();
 	
-protected:
+public:
 	void set_goal(int val);
 	void set_score(int val);
 	
@@ -77,10 +84,14 @@ protected:
 
 public:	
 	virtual void on_full_lines_count(int value) { }
-	
+	virtual void on_score_changed(int old_value) { }
 public:
 	void inc_score(int amount);
 	void blank_skip(int frames_cnt) const;
+
+public:
+	inline PieceGenerator* get_piece_generator() { return _piece_generator; }
+	inline void set_piece_generator(PieceGenerator* piece_gen) { _piece_generator = piece_gen; }
 
 public:
 	virtual void init() override;	
