@@ -1,6 +1,6 @@
 #pragma once
 
-#include <AstralbrewLib>
+#include <Astralbrew>
 #include "data/mesh.hpp"
 #include "data/piece.hpp"
 #include "data/piece_gen.hpp"
@@ -59,6 +59,8 @@ private:
 	
 	int goal = 0;
 	int score = 0;
+	
+	int update_rate = 30;
 		
 	const char* dialog_stream = nullptr;
 	
@@ -84,22 +86,24 @@ protected:
 
 public:	
 	virtual void on_full_lines_count(int value) { }
+	virtual void on_lines_cleared(int value) { }
 	virtual void on_score_changed(int old_value) { }
 public:
 	void inc_score(int amount);
 	void blank_skip(int frames_cnt) const;
-
+	void set_speed(int frames);
 public:
 	inline PieceGenerator* get_piece_generator() { return _piece_generator; }
 	inline void set_piece_generator(PieceGenerator* piece_gen) { _piece_generator = piece_gen; }
 
 public:
-	virtual void init() override;	
+	virtual void init() override;
 	
 	virtual void frame() override;	
 	
 	virtual void on_key_down(int keys) override;
 	virtual void on_key_held(int keys) override;
 	
+	Board() = default;
 	~Board();
 };

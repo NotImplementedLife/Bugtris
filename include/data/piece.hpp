@@ -1,6 +1,6 @@
 #pragma once
 
-#include <AstralbrewLib>
+#include <Astralbrew>
 
 struct Piece
 {

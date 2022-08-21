@@ -52,14 +52,16 @@ void Board::frame()
 				board_mesh+=*user_controllable_mesh;		
 
 				if(clear_lines) 
-				{
-					score += board_mesh.clear_full_lines(10);
-					set_score(score);					
+				{					
+					int lines = board_mesh.clear_full_lines(10);
+					if(lines)
+						on_lines_cleared(lines);
 				}
 				else
 				{					
 					int lines=board_mesh.count_full_lines(10);
-					on_full_lines_count(lines);					
+					if(lines)
+						on_full_lines_count(lines);
 				}					
 				
 				delete user_controllable_mesh;
@@ -73,7 +75,7 @@ void Board::frame()
 	}	
 	frame_key_control = 0;
 	frame_cnt++;
-	if(frame_cnt==30) {
+	if(frame_cnt == update_rate) {
 		frame_cnt=0;
 	}
 }
@@ -84,6 +86,11 @@ void Board::blank_skip(int frames_cnt) const
 	{		
 		VBlankIntrWait();
 	}
+}
+
+void Board::set_speed(int frames)
+{
+	update_rate = frames;
 }
 
 void Board::inc_score(int amount)

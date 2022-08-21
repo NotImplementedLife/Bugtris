@@ -2,7 +2,7 @@
 
 #include "levels/level_ota.hpp"
 
-class Level2 : public Board
+class Level2 : public Level
 {
 public:	
 	class FirstFullLineAction : public LevelOTA
@@ -10,7 +10,7 @@ public:
 		virtual void action() override
 		{
 			level->blank_skip(60);			
-			level->show_dialog("Cappuccino", "WORKS!!!");
+			level->show_dialog("Cappuccino", "Oh yeahhh! It works now");
 		}
 	};
 	
@@ -32,17 +32,19 @@ public:
 	
 	GoalReachedAction goal_reached_action;
 	
-	Level2()
-	{		
-		first_full_line_action.set_level(this);
-		goal_reached_action.set_level(this);
-	}	
+	Level2() : Level(2) { }	
 	
 	virtual void init() override
-	{
-		Board::init();
+	{		
+		Level::init();		
+		first_full_line_action.set_level(this);
+		goal_reached_action.set_level(this);
 		clear_lines = true;
-		set_goal(5);
+		set_goal(5);		
+	}
+	
+	virtual void on_level_start() override
+	{		
 		show_dialog("Cappuccino", "I think I've repaired it.");
 	}
 
@@ -54,10 +56,10 @@ public:
 		}		
 	}
 	
-	virtual void on_full_lines_count(int value) override
+	virtual void on_lines_cleared(int value) override
 	{		
-		set_score(value);
-		if(value>=1)
+		inc_score(value);
+		if(get_score() >= 1)
 		{			
 			first_full_line_action.execute();
 		}		

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <AstralbrewLib>
+#include <Astralbrew>
 
 #define mk_block(color, design) (0x80|(((color)<<2)|(design)))
 
