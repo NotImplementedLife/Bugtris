@@ -4,5 +4,5 @@
 
 Piece PieceGenerator::next() const
 {
-	return { (u8)(rand()%6), (u8)(rand()%8), (u8)(rand()%4) };
+	return { (u8)(rand()%7), (u8)(rand()%8), (u8)(rand()%4) };
 }

@@ -46,7 +46,7 @@ void Board::process_dialog()
 		}
 		else
 		{
-			wait_for_key_pressed(KEY_A);
+			wait_for_key_pressed(KEY_A);			
 		}
 	}		
 }

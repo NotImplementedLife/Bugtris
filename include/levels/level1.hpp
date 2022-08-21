@@ -54,7 +54,7 @@ public:
 		set_score(value);
 		if(value>=1)
 		{			
-			first_full_line_action.execute();
+			first_full_line_action.execute();			
 		}
 		if(value>=get_goal()) 
 		{

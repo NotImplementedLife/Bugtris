@@ -175,6 +175,21 @@ bool Mesh::operator || (const Mesh& m) const
 	return nrc>0;
 }
 
+bool Mesh::operator && (const Mesh& m) const
+{
+	for(int iy=0;iy<height();iy++)
+	{		
+		for(int ix=0;ix<width();ix++)
+		{
+			int cy = y()+iy;
+			int cx = x()+ix;
+			if(at(ix, iy) && m.coord_at(cx, cy)) 
+				return true;			
+		}
+	}
+	return false;
+}
+
 void Mesh::replace(int v, int w)
 {
 	for(int iy=0;iy<height();iy++)
@@ -283,3 +298,48 @@ Mesh::~Mesh()
 	delete[] data;
 }
 
+const u8 mesh_gfx[7][16] = 
+{
+	{
+		0,1,0,0,
+		0,1,0,0,
+		0,1,0,0,
+		0,1,0,0,
+	},
+	{
+		0,0,0,0,
+		0,1,1,0,
+		0,1,1,0,
+		0,0,0,0,
+	},
+	{
+		0,0,0,0,
+		1,1,0,0,
+		0,1,1,0,
+		0,0,0,0,
+	},
+	{
+		0,0,0,0,
+		0,0,1,1,
+		0,1,1,0,
+		0,0,0,0,
+	},
+	{
+		0,1,1,0,
+		0,1,0,0,
+		0,1,0,0,
+		0,0,0,0,
+	},
+	{
+		0,1,1,0,
+		0,0,1,0,
+		0,0,1,0,
+		0,0,0,0,
+	},
+	{
+		0,0,0,0,
+		0,1,1,1,
+		0,0,1,0,
+		0,0,0,0,
+	},
+};

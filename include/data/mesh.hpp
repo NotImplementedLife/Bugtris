@@ -31,6 +31,7 @@ public:
 	
 	Mesh& operator += (const Mesh&);
 	bool operator || (const Mesh&) const;
+	bool operator && (const Mesh&) const;
 	
 	int width() const { return _width; }
 	int height() const { return _height; }
@@ -57,3 +58,5 @@ public:
 	
 	~Mesh();
 };
+
+extern const u8 mesh_gfx[7][16];

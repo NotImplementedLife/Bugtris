@@ -22,46 +22,6 @@ void Board::draw_mesh(const Mesh& mesh)
 	}
 }
 
-static const u8 mesh_gfx[6][16] = 
-{
-	{
-		0,1,0,0,
-		0,1,0,0,
-		0,1,0,0,
-		0,1,0,0,
-	},
-	{
-		0,0,0,0,
-		0,1,1,0,
-		0,1,1,0,
-		0,0,0,0,
-	},
-	{
-		0,0,0,0,
-		1,1,0,0,
-		0,1,1,0,
-		0,0,0,0,
-	},
-	{
-		0,1,1,0,
-		0,1,0,0,
-		0,1,0,0,
-		0,0,0,0,
-	},
-	{
-		0,1,1,0,
-		0,0,1,0,
-		0,0,1,0,
-		0,0,0,0,
-	},
-	{
-		0,0,0,0,
-		0,1,1,1,
-		0,0,1,0,
-		0,0,0,0,
-	},
-};
-
 void Board::spawn_mesh(int gid, int color, int shape)
 {		
 	user_controllable_mesh = new Mesh(mesh_spawn_x,0,4,4,mesh_gfx[gid]);

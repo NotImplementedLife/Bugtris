@@ -150,17 +150,20 @@ void Level::frame()
 	if(!level_animation_done)
 	{
 		level_display_animation();	
-		OamPool::deploy();	
+		OamPool::deploy();
 	}
 	else		
 	{		
 		Board::frame();	
 	}
-	
 }
 
 Level::~Level()
 {
+	for(int i=0;i<level_text_chars_spr.size();i++)
+	{
+		delete level_text_chars_spr[i];
+	}
 	objDisable();
 }
 
