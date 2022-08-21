@@ -73,7 +73,7 @@ public:
 	void show_dialog(const char* actor_name, const char* message, void (*callback)(void*) = 0);	
 	
 	void hide_dialog();
-	
+	bool new_dialog = false;
 public:
 	void set_goal(int val);
 	void set_score(int val);
@@ -82,7 +82,9 @@ public:
 	int get_score() const { return score; }
 protected:
 	int move_direction = 1;		
+	int mesh_spawn_x = 0;
 	bool clear_lines = false;
+	bool ffw_enabled = true;
 
 public:	
 	virtual void on_full_lines_count(int value) { }

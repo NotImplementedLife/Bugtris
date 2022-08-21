@@ -63,8 +63,8 @@ static const u8 mesh_gfx[6][16] =
 };
 
 void Board::spawn_mesh(int gid, int color, int shape)
-{	
-	user_controllable_mesh = new Mesh(0,0,4,4,mesh_gfx[gid]);
+{		
+	user_controllable_mesh = new Mesh(mesh_spawn_x,0,4,4,mesh_gfx[gid]);
 	user_controllable_mesh->replace(1, mk_block(color, shape));
 }
 

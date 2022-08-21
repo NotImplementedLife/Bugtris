@@ -41,6 +41,7 @@ public:
 		first_full_line_action.set_level(this);
 		goal_reached_action.set_level(this);		
 		set_goal(5);				
+		ffw_enabled = false;
 	}
 	
 	virtual void on_level_start() override

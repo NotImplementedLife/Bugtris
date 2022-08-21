@@ -146,13 +146,13 @@ void Board::on_key_down(int keys)
 void Board::on_key_held(int keys)
 {
 	if(keys & KEY_DOWN)
-	{
-		if(user_controllable_mesh)
+	{		
+		if(ffw_enabled && user_controllable_mesh)
 		{			
-			user_controllable_mesh->move(0,move_direction);
+			user_controllable_mesh->move(0, move_direction);
 			if(!ucm_in_bounds())
 			{
-				user_controllable_mesh->move(0,-move_direction);
+				user_controllable_mesh->move(0, -move_direction);
 			}
 		}
 	}

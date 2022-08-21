@@ -1,6 +1,7 @@
 #pragma once
 
 #include "levels/level_ota.hpp"
+#include "levels/level3.hpp"
 
 class Level2 : public Level
 {
@@ -19,11 +20,22 @@ public:
 		virtual void action() override
 		{
 			level->blank_skip(60);
-			level->show_dialog("Cappuccino", "Alright, that's enough. I gathered all the data I needed.",
+			level->show_dialog("Cappuccino", "That's great!\n\nNow let me introduce you to your next partner.",
 				[](void* self)
-				{					
-					((Scene*)self)->close()->next(new Level2());
-					FATAL_ERROR("Entrypoint jump missed");					
+				{	
+					((Level*)self)->blank_skip(5);
+					((Level*)self)->show_dialog("Bob", "Huh?\n\nOh hi! I'm Bob. I like ice cream and sleeping.\n\n"
+						"Huh? About the project? Oh yeah, the project... I want to show a pleasant feature. Huh.",
+						[](void* self)
+						{							
+							((Level*)self)->blank_skip(5);
+							((Level*)self)->show_dialog("Cappuccino","Isn't that great news?\n\n Let's go!", [](void* self)
+							{
+								((Level*)self)->blank_skip(10);
+								((Level*)self)->close()->next(new Level3());
+								FATAL_ERROR("Entrypoint jump missed");
+							});
+						});
 				});			
 		}
 	};	
@@ -41,6 +53,7 @@ public:
 		goal_reached_action.set_level(this);
 		clear_lines = true;
 		set_goal(5);		
+		//ffw_enabled = false;
 	}
 	
 	virtual void on_level_start() override

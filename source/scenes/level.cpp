@@ -98,7 +98,7 @@ int f(float v, int t)
 
 void Level::level_display_animation()
 {
-	if(t<100)
+	if(t<90)
 	{
 		for(int i=0;i<level_text_chars_spr.size();i++)
 		{
@@ -111,7 +111,20 @@ void Level::level_display_animation()
 		}
 		t++;
 	}
-	else
+	else if(t<100)
+	{
+		for(int i=0;i<level_text_chars_spr.size();i++)
+		{
+			level_text_chars_spr[i]->set_position(
+				level_text_chars_spr[i]->pos_x(),			
+				80
+			);
+			level_text_chars_spr[i]->update_position(nullptr);
+			level_text_chars_spr[i]->update_visual();
+		}
+		t++;
+	}
+	else if(t<170)
 	{
 		for(int i=0;i<level_text_chars_spr.size();i++)
 		{
@@ -119,16 +132,16 @@ void Level::level_display_animation()
 				level_text_chars_spr[i]->pos_x(), 
 				level_text_chars_spr[i]->pos_y() + spr_velocity[i]
 			);
-			spr_velocity[i]+=rand()%10*0.01f;
+			spr_velocity[i]+=rand()%10*0.02f;
 			level_text_chars_spr[i]->update_position(nullptr);
 			level_text_chars_spr[i]->update_visual();
 		}
-		t++;		
+		t++;
 	}
-	if(t>=190) 
+	else 
 	{		
 		level_animation_done = true;
-		on_level_start();
+		on_level_start();		
 	}
 }
 

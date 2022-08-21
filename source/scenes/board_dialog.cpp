@@ -6,11 +6,13 @@ using namespace Astralbrew::Video;
 
 void Board::show_dialog(const char* actor_name, const char* message, void (*callback)(void*))
 {	
+	new_dialog = true;
 	bgShow(0);
 	bgShow(1);	
 	
 	set_dialog_character(CatsPics[actor_name].tiles, CatsPics[actor_name].palette);
 	
+	vwf_title.clear(Pal4bit);
 	vwf_title.put_text(actor_name, Pal4bit, SolidColorBrush(0xE));
 	
 	dialog_stream = message;
@@ -26,6 +28,7 @@ void Board::hide_dialog()
 void Board::process_dialog()
 {
 	if(dialog_stream) {
+		new_dialog = false;
 		vwf_body.clear(Pal4bit);
 		int count = vwf_body.put_text(dialog_stream, Pal4bit, SolidColorBrush(0xF));		
 		dialog_stream+=count;		
@@ -35,9 +38,10 @@ void Board::process_dialog()
 			dialog_stream=nullptr;		
 			hide_dialog();
 			if(dialog_callback)
-			{
-				dialog_callback(this);
-				dialog_callback = 0;
+			{				
+				dialog_callback(this);	
+				if(!new_dialog)
+					dialog_callback = 0;
 			}
 		}
 		else
