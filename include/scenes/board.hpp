@@ -9,20 +9,22 @@ using Astralbrew::Text::VwfEngine;
 using Astralbrew::Memory::Address;
 using Astralbrew::Memory::VramManager;
 using Astralbrew::Text::ReadOnlyFont;
+using Astralbrew::Entity::Sprite;
 
 extern PieceGenerator default_piece_generator;
 
 class Board : public Astralbrew::World::Scene
 {
+protected:
+	VramManager vram_chr_1 = VramManager::from_char_block(1);	
+	VramManager vram_chr_2 = VramManager::from_char_block(2);	
+	VramManager vram_chr_3 = VramManager::from_char_block(3);
+	VramManager vram_obj = VramManager::from_char_block(4);
 private:
 	char id[10]="Board";
 	Astralbrew::Vector<Mesh> meshes;
 	Mesh board_mesh = Mesh(0,0,10,18);
 	Mesh* user_controllable_mesh = NULL;
-	
-	VramManager vram_chr_1 = VramManager::from_char_block(1);	
-	VramManager vram_chr_2 = VramManager::from_char_block(2);	
-	VramManager vram_chr_3 = VramManager::from_char_block(3);
 	
 	int piece_tiles_start_id = 0;	
 	
@@ -53,6 +55,7 @@ private:
 	void init_board_table();
 	void init_dialog_bg();
 	void init_dialog_fg();
+	void init_speed_panel();
 	
 	int frame_cnt=0;
 	int frame_key_control = 0;
@@ -69,6 +72,12 @@ private:
 	void (*dialog_callback)(void*) = 0;
 	
 	PieceGenerator* _piece_generator = &default_piece_generator;
+	
+	Address speed_panel_tiles_addr;
+	Sprite* speed_panel = nullptr;
+	
+	Address speed_stripes_addr;
+	Sprite* speed_stripes = nullptr;
 public:	
 	void show_dialog(const char* actor_name, const char* message, void (*callback)(void*) = 0);	
 	
@@ -80,6 +89,8 @@ public:
 	
 	int get_goal() const { return goal; }
 	int get_score() const { return score; }
+	
+	void hide_speed_panel();
 protected:
 	int move_direction = 1;		
 	int mesh_spawn_x = 0;
@@ -94,6 +105,10 @@ public:
 	void inc_score(int amount);
 	void blank_skip(int frames_cnt) const;
 	void set_speed(int frames);
+	
+	int get_speed() const;
+	
+	void update_speed_stripes();
 public:
 	inline PieceGenerator* get_piece_generator() { return _piece_generator; }
 	inline void set_piece_generator(PieceGenerator* piece_gen) { _piece_generator = piece_gen; }

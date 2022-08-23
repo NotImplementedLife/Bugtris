@@ -18,11 +18,8 @@ Level::Level(int id)
 
 void Level::init()
 {	
-	Board::init();
-	objEnable1D();	
-		
-	Address transparent_tile;
-	vram_obj.reserve(&transparent_tile, tiles_size_4bpp(1));
+	Board::init();	
+	
 	vram_obj.reserve(&level_text_chars_base, tiles_size_4bpp(2*level_text_chars_addr.size()));
 	
 	level_text_chars_base.write(level_charsTiles, level_charsTilesLen);	
@@ -154,9 +151,11 @@ void Level::frame()
 	}
 	else		
 	{		
-		Board::frame();	
+		Board::frame();			
 	}
 }
+
+
 
 Level::~Level()
 {

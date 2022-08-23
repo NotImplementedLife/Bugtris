@@ -38,6 +38,7 @@ public:
 	virtual void init() override
 	{		
 		Level::init();
+		hide_speed_panel();
 		first_full_line_action.set_level(this);
 		goal_reached_action.set_level(this);		
 		set_goal(5);				
@@ -56,7 +57,11 @@ public:
 		{			
 			first_full_line_action.execute();			
 		}
-		if(value>=get_goal()) 
+	}
+	
+	virtual void on_score_changed(int old_value) override
+	{
+		if(get_score()>=get_goal()) 
 		{
 			goal_reached_action.execute();
 		}			

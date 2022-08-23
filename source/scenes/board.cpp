@@ -3,6 +3,7 @@
 using namespace Astralbrew;
 using namespace Astralbrew::Memory;
 using namespace Astralbrew::Video;
+using namespace Astralbrew::Objects;
 
 #include <stdlib.h>
 
@@ -11,9 +12,11 @@ PieceGenerator default_piece_generator = PieceGenerator();
 void Board::init()
 {			
 	Video::setMode(0);
+	objEnable1D();	
 	init_board_table();
 	init_dialog_bg();
 	init_dialog_fg();		
+	init_speed_panel();
 
 	hide_dialog();
 	
@@ -25,6 +28,8 @@ void Board::init()
 	
 	set_goal(0);
 	set_score(0);
+	
+	update_speed_stripes();
 }
 
 void Board::frame()
@@ -78,6 +83,7 @@ void Board::frame()
 	if(frame_cnt == update_rate) {
 		frame_cnt=0;
 	}
+	OamPool::deploy();
 }
 
 void Board::blank_skip(int frames_cnt) const
@@ -91,6 +97,7 @@ void Board::blank_skip(int frames_cnt) const
 void Board::set_speed(int frames)
 {
 	update_rate = frames;
+	update_speed_stripes();
 }
 
 void Board::inc_score(int amount)
@@ -102,8 +109,7 @@ void Board::on_key_down(int keys)
 {	
 	if((keys & KEY_START))
 	{		
-		this->close()->next(new Board());
-		FATAL_ERROR("Entrypoint jump missed");
+		set_score(1000);
 	}
 	if((keys & KEY_LEFT) && !(frame_key_control & KEY_LEFT))
 	{		
@@ -185,7 +191,44 @@ void Board::set_score(int val)
 	}
 }
 
+void Board::update_speed_stripes()
+{
+	int bars_cnt = (33-update_rate)/3;
+	
+	u16* buff = (u16*)speed_stripes_addr.get_value();
+	for(int y=57;y>=12;y--)
+	{								
+		int ty = y/8;		
+		u16* base = buff + ty*64 + 16 + 2*(y&7);		
+		if(!bars_cnt) 
+		{
+			base[1] = base[16] = 0x0000;
+			continue;
+		}
+		if(y%4==2)
+		{
+			base[1] = base[16] = 0x0000;
+			bars_cnt--;
+		}
+		else
+			base[1] = base[16] = 0x1111;
+		
+	}
+}
+
+int Board::get_speed() const
+{
+	return update_rate;
+}
+
+void Board::hide_speed_panel()
+{
+	speed_panel->get_attribute()->set_priority(3);
+	speed_stripes->get_attribute()->set_priority(3);
+}
+
 Board::~Board()
 {
-	
+	delete speed_panel;
+	delete speed_stripes;
 }

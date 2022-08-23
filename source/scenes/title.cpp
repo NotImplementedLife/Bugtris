@@ -5,8 +5,11 @@
 #include "piece_tiles.h"
 #include <stdlib.h>
 
+#include "levels/level1.hpp"
+
 using namespace Astralbrew;
 using namespace Astralbrew::Video;
+using namespace Astralbrew::Drawing;
 
 void Title::init()
 {
@@ -102,7 +105,17 @@ void Title::init()
 	
 	meshes.push_back(Mesh(25,6,4,4,mesh_gfx[5]));
 	meshes.back().rotate_cw();
-	meshes.back().replace(1, mk_block(6,3));	
+	meshes.back().replace(1, mk_block(6,3));
+	
+	bgInit(0, Text256x256, Pal4bit, 2, 2);
+	
+	
+	vram_chr_2.reserve(&transparent_tile, tiles_size_4bpp(1));
+	BG_PALETTE[0x91] = Colors::White;
+	vram_chr_2.reserve(&dialog_addr, tiles_size_8bpp(20));
+	vwf.set_render_space(dialog_addr.get_value(),2,10);
+	VwfEngine::prepare_map(vwf, bgGetMapPtr(0), 32, 10, 14, 0x9);
+	vwf.put_text(" Press START", Pal4bit, SolidColorBrush(0x1));
 	
 	/*int max_y = 0;	
 	do
@@ -177,11 +190,32 @@ void Title::draw_mesh(const Mesh& mesh)
 
 void Title::frame()
 {
+	anim_cooldown--;
+	if(anim_cooldown==0)
+	{
+		if(bgIsVisible(0))	
+			bgHide(0);	
+		else 
+			bgShow(0);
+		anim_cooldown=30;
+	}
 	for(int i=0;i<meshes.size();i++)
 	{
 		draw_mesh(meshes[i]);		
-	}
-	
+	}	
 	bgScroll(2, 1, 0);
 	bgUpdate();
+}
+
+void Title::on_key_down(int keys)
+{
+	if(keys & KEY_START)
+	{
+		close()->next(new Level1());
+	}
+}
+
+Title::~Title()
+{
+	Astralbrew::Utils::zeroize((void*)VRAM, 0x1800/4);
 }

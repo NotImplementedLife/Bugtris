@@ -4,12 +4,14 @@ using namespace Astralbrew;
 using namespace Astralbrew::Drawing;
 using namespace Astralbrew::Memory;
 using namespace Astralbrew::Video;
+using namespace Astralbrew::Objects;
 
 #include "board-bg.h"
 #include "piece_tiles.h"
 #include "dialog-bg.h"
 #include "dialog-frame.h"
 #include "digits.h"
+#include "speed-panel.h"
 
 void Board::init_board_table()
 {
@@ -83,3 +85,36 @@ void Board::init_dialog_fg()
 		}
 	}
 }
+
+void Board::init_speed_panel()
+{
+	Address transparent_tile;	
+	vram_obj.reserve(&transparent_tile, tiles_size_4bpp(1));
+	
+	vram_obj.reserve(&speed_panel_tiles_addr, speed_panelTilesLen);	
+	speed_panel = Sprite::quick16(&speed_panel_tiles_addr, SIZE_32x64, ANCHOR_TOP_LEFT);
+	speed_panel_tiles_addr.write(speed_panelTiles, speed_panelTilesLen);	
+	speed_panel->get_attribute()->set_priority(0);
+	speed_panel->get_attribute()->set_palette_number(2);
+	speed_panel->set_position(10,10);
+	
+	speed_panel->update_position(nullptr);
+	speed_panel->update_visual();	
+	
+	dmaCopy(speed_panelPal, &SPRITE_PALETTE[0x20], 16*sizeof(u16));
+		
+	
+	vram_obj.reserve(&speed_stripes_addr, speed_panelTilesLen);
+	speed_stripes = Sprite::quick16(&speed_stripes_addr, SIZE_32x64, ANCHOR_TOP_LEFT);
+	speed_stripes->get_attribute()->set_priority(0);
+	speed_stripes->get_attribute()->set_palette_number(3);
+	speed_stripes->set_position(10,10);
+	speed_stripes->update_position(nullptr);
+	speed_stripes->update_visual();	
+	
+	SPRITE_PALETTE[0x31] = 0x7fef;
+	
+}
+
+
+

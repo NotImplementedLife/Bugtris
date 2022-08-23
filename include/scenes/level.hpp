@@ -10,7 +10,6 @@ using Astralbrew::sf24;
 class Level : public Board
 {
 private:
-	VramManager vram_obj = VramManager::from_char_block(4);
 	Address level_text_chars_base;
 	Vector<Address> level_text_chars_addr;
 	Vector<Sprite*> level_text_chars_spr;		
@@ -26,7 +25,7 @@ public:
 	Level(int id=0);
 	void init() override;
 	void frame() override;
-	~Level();
+	~Level();	
 	
 public:
 	virtual void on_level_start();
