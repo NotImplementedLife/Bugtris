@@ -10,4 +10,5 @@ public:
 	
 	static unsigned char rand_color();
 	static unsigned char rand_shape();
+	static unsigned char rand_piece();
 };

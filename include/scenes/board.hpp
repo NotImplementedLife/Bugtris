@@ -24,11 +24,10 @@ private:
 	char id[10]="Board";
 	Astralbrew::Vector<Mesh> meshes;
 	Mesh board_mesh = Mesh(0,0,10,18);
-	Mesh* user_controllable_mesh = NULL;
-	
-	int piece_tiles_start_id = 0;	
-	
-	
+public:
+	Mesh* user_controllable_mesh = nullptr;
+private:
+	int piece_tiles_start_id = 0;		
 	Address board_bg_addr;
 	Address piece_bg_addr;
 	Address dialog_bg_addr;
@@ -67,7 +66,7 @@ private:
 		
 	const char* dialog_stream = nullptr;
 	
-	void process_dialog();
+	bool process_dialog();
 	
 	void (*dialog_callback)(void*) = 0;
 	

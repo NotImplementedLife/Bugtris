@@ -15,7 +15,7 @@ public:
 			level->show_dialog("Cappuccino", "Great work!",
 				[](void* self)
 				{					
-					((Scene*)self)->close()->next(nullptr);
+					((Level*)self)->next_level();
 					FATAL_ERROR("Entrypoint jump missed");						
 				});
 		}

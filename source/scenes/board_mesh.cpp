@@ -30,7 +30,8 @@ void Board::spawn_mesh(int gid, int color, int shape)
 
 void Board::spawn_mesh(const Piece& piece)
 {
-	spawn_mesh(piece.g_id, piece.color, piece.shape);
+	if(piece.g_id != 0xFF)
+		spawn_mesh(piece.g_id, piece.color, piece.shape);
 }
 
 void Board::clear()

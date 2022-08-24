@@ -30,11 +30,22 @@ void Board::init()
 	set_score(0);
 	
 	update_speed_stripes();
+	
+	clear();
 }
 
 void Board::frame()
 {	
-	process_dialog();
+	if(process_dialog())
+	{
+		clear();
+		draw_mesh(board_mesh);
+		for(int i=0;i<meshes.size();i++)
+			draw_mesh(meshes[i]);	
+		if(user_controllable_mesh)
+			draw_mesh(*user_controllable_mesh);
+		return;
+	}
 	
 	clear();
 	draw_mesh(board_mesh);
@@ -231,4 +242,5 @@ Board::~Board()
 {
 	delete speed_panel;
 	delete speed_stripes;
+	delete user_controllable_mesh;
 }

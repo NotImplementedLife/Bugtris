@@ -16,3 +16,8 @@ unsigned char PieceGenerator::rand_shape()
 {
 	return rand()%4;
 }
+
+unsigned char PieceGenerator::rand_piece()
+{
+	return rand()%7;
+}
