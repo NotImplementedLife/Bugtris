@@ -1,7 +1,6 @@
 #pragma once
 
 #include "levels/level_ota.hpp"
-#include "levels/level4.hpp"
 
 class Level3 : public Level
 {
@@ -32,7 +31,7 @@ public:
 			level->show_dialog("Bob", "Enough for today. I'll make some mentenance... I guess.",
 				[](void* self)
 				{
-					((Scene*)self)->close()->next(new Level4());
+					((Level*)self)->next_level();
 					FATAL_ERROR("Entrypoint jump missed");
 				});
 		}
@@ -54,8 +53,7 @@ public:
 		hide_speed_panel();
 		some_moves_performed_action.set_level(this);
 		goal_reached_action.set_level(this);
-		down_moves_performed_action.set_level(this);
-		clear_lines = true;
+		down_moves_performed_action.set_level(this);		
 		move_direction = -1;
 		mesh_spawn_x = 3;
 		set_goal(3);

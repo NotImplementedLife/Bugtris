@@ -94,7 +94,7 @@ public:
 protected:
 	int move_direction = 1;		
 	int mesh_spawn_x = 0;
-	bool clear_lines = false;
+	bool clear_lines = true;
 	bool ffw_enabled = true;
 
 public:	

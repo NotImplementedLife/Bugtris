@@ -27,6 +27,7 @@ public:
 	void frame() override;
 	~Level();	
 	
+	void next_level();
 public:
 	virtual void on_level_start();
 };

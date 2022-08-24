@@ -3,7 +3,7 @@
 #include "levels/level_ota.hpp"
 
 
-class Level5 : public Level
+class Level6 : public Level
 {
 public:	
 	
@@ -15,7 +15,7 @@ public:
 			level->show_dialog("Cappuccino", "Great work!",
 				[](void* self)
 				{					
-					((Scene*)self)->close()->next(nullptr);
+					((Level*)self)->next_level();
 					FATAL_ERROR("Entrypoint jump missed");						
 				});
 		}
@@ -26,7 +26,7 @@ public:
 	
 	GoalReachedAction goal_reached_action;
 	
-	Level5() : Level(5) { }	
+	Level6() : Level(6) { }	
 	
 	virtual void init() override
 	{		
@@ -67,5 +67,5 @@ public:
 		inc_score(value);
 	}
 	
-	~Level5() { }
+	~Level6() { }
 };

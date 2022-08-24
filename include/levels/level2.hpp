@@ -1,7 +1,6 @@
 #pragma once
 
 #include "levels/level_ota.hpp"
-#include "levels/level3.hpp"
 
 class Level2 : public Level
 {
@@ -32,7 +31,7 @@ public:
 							((Level*)self)->show_dialog("Cappuccino","Isn't that great news?\n\n Let's go!", [](void* self)
 							{
 								((Level*)self)->blank_skip(10);
-								((Level*)self)->close()->next(new Level3());
+								((Level*)self)->next_level();
 								FATAL_ERROR("Entrypoint jump missed");
 							});
 						});
@@ -51,8 +50,7 @@ public:
 		Level::init();		
 		hide_speed_panel();
 		first_full_line_action.set_level(this);
-		goal_reached_action.set_level(this);
-		clear_lines = true;
+		goal_reached_action.set_level(this);		
 		set_goal(5);		
 		ffw_enabled = false;		
 	}

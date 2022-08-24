@@ -19,7 +19,7 @@ public:
 					((Level*)self)->show_dialog("Bob", "Hope you enjoyed it. Huh",
 						[](void* self)
 						{
-							((Scene*)self)->close()->next(new Level5());
+							((Level*)self)->next_level();
 							FATAL_ERROR("Entrypoint jump missed");
 						});
 				});
@@ -37,8 +37,7 @@ public:
 	{		
 		Level::init();				
 		hide_speed_panel();
-		goal_reached_action.set_level(this);		
-		clear_lines = true;
+		goal_reached_action.set_level(this);				
 		mesh_spawn_x = 3;
 		set_goal(7);
 	}

@@ -5,6 +5,7 @@
 #include <gba.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "levels/level_manager.hpp"
 
 using namespace Astralbrew;
 using namespace Astralbrew::Video;
@@ -155,7 +156,11 @@ void Level::frame()
 	}
 }
 
-
+void Level::next_level()
+{
+	int id = lvl_id;
+	close()->next(LevelManager::generate(id+1));
+}
 
 Level::~Level()
 {
