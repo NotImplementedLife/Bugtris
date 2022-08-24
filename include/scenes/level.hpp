@@ -28,6 +28,9 @@ public:
 	~Level();	
 	
 	void next_level();
+	
+	virtual void on_board_overlap() override { on_game_over(); }
+	virtual void on_game_over();
 public:
 	virtual void on_level_start();
 };

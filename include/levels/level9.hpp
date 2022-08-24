@@ -2,7 +2,8 @@
 
 #include "levels/level_ota.hpp"
 
-class Level4 : public Level
+
+class Level9 : public Level
 {
 public:	
 	
@@ -11,15 +12,11 @@ public:
 		virtual void action() override
 		{
 			level->blank_skip(60);
-			level->show_dialog("Cappuccino", "Excellent!",
+			level->show_dialog("Bob", "Fortunately that's an easy fix. Huh",
 				[](void* self)
 				{
-					((Level*)self)->show_dialog("Bob", "Hope you enjoyed it. Huh",
-						[](void* self)
-						{
-							((Level*)self)->next_level();
-							FATAL_ERROR("Entrypoint jump missed");
-						});
+					((Level*)self)->next_level();
+					FATAL_ERROR("Entrypoint jump missed");
 				});
 		}
 	};
@@ -29,23 +26,19 @@ public:
 	
 	GoalReachedAction goal_reached_action;
 	
-	Level4() : Level(4) { }	
+	Level9() : Level(9) { }	
 	
 	virtual void init() override
 	{		
-		Level::init();				
-		hide_speed_panel();
+		Level::init();						
 		goal_reached_action.set_level(this);						
 		set_goal(7);
 	}
 	
 	virtual void on_level_start() override
 	{		
-		show_dialog("Bob", "I worked hard all night. Everything seems to be fixed now.",
-		[](void* sender)
-		{
-			((Level*)sender)->show_dialog("Cappuccino", "Finally! Let's hope for a normal Tetris game!");
-		});
+		show_dialog("Bob", "Huh. One of our teamworkers was talking about a strange graphical glitch that "
+					"showed up these days. Let's see what is this about.");		
 	}
 
 	virtual void on_score_changed(int old_value) override
@@ -59,7 +52,8 @@ public:
 	virtual void on_lines_cleared(int value) override
 	{
 		inc_score(value);
+		board_mesh.set_all_values(mk_block(get_piece_generator()->rand_color(), get_piece_generator()->rand_shape()));
 	}
 	
-	~Level4() { }
+	~Level9() { }
 };

@@ -156,6 +156,16 @@ void Level::frame()
 	}
 }
 
+void Level::on_game_over()
+{
+	show_dialog("Cappuccino", "Game over... Still, our objective has yet to be achieved. Keep your head up and let's try again!",
+		[](void* self)
+		{
+			int id = ((Level*)self)->lvl_id;
+			((Level*)self)->close()->next(LevelManager::generate(id));
+		});
+}
+
 void Level::next_level()
 {
 	int id = lvl_id;

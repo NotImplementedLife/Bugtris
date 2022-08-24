@@ -22,9 +22,9 @@ protected:
 	VramManager vram_obj = VramManager::from_char_block(4);
 private:
 	char id[10]="Board";
-	Astralbrew::Vector<Mesh> meshes;
-	Mesh board_mesh = Mesh(0,0,10,18);
+	Astralbrew::Vector<Mesh> meshes;	
 public:
+	Mesh board_mesh = Mesh(0,0,10,18);
 	Mesh* user_controllable_mesh = nullptr;
 private:
 	int piece_tiles_start_id = 0;		
@@ -100,6 +100,8 @@ public:
 	virtual void on_full_lines_count(int value) { }
 	virtual void on_lines_cleared(int value) { }
 	virtual void on_score_changed(int old_value) { }
+	virtual void on_piece_placed() { }
+	virtual void on_board_overlap() { }
 public:
 	void inc_score(int amount);
 	void blank_skip(int frames_cnt) const;

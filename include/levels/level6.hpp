@@ -21,7 +21,7 @@ public:
 			level->blank_skip(60);
 			level->show_dialog("Cappuccino", "Something wrong with the RNG?! We need to look into that.",
 				[](void* self)
-				{						
+				{
 					((Level*)self)->next_level();
 					FATAL_ERROR("Entrypoint jump missed");
 				});

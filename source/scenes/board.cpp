@@ -60,12 +60,13 @@ void Board::frame()
 		//greenSwapSwitch();
 		
 		if(user_controllable_mesh)
-		{							
+		{				
 			user_controllable_mesh->move(0,1);
 			if(!ucm_in_bounds())
 			{			
 				user_controllable_mesh->move(0,-1);
-				board_mesh+=*user_controllable_mesh;		
+				board_mesh+=*user_controllable_mesh;
+				on_piece_placed();
 
 				if(clear_lines) 
 				{					
@@ -86,7 +87,12 @@ void Board::frame()
 		}	
 		if(!user_controllable_mesh)
 		{
-			spawn_mesh(get_piece_generator()->next());
+			Piece piece = get_piece_generator()->next();
+			spawn_mesh(piece);
+			if(piece.g_id!=0xFF && !ucm_in_bounds())
+			{
+				on_board_overlap();
+			}
 		}
 	}	
 	frame_key_control = 0;

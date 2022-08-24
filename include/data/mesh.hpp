@@ -39,6 +39,7 @@ public:
 	int coord_at(int cx, int cy) const;
 	
 	void replace(int v, int w);
+	void set_all_values(int v);
 	
 	int at(int px, int py) const;
 	

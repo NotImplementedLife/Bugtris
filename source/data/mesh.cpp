@@ -204,6 +204,20 @@ void Mesh::replace(int v, int w)
 	}
 }
 
+void Mesh::set_all_values(int v)
+{
+	for(int iy=0;iy<height();iy++)
+	{		
+		for(int ix=0;ix<width();ix++)
+		{
+			if(data[iy*width()+ix])
+			{
+				data[iy*width()+ix]=v;
+			}
+		}
+	}	
+}
+
 void Mesh::rotate_ccw()
 {	
 	assert(width()==height());
