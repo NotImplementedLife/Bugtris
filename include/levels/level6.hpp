@@ -6,17 +6,24 @@
 class Level6 : public Level
 {
 public:	
+	class PGen : public PieceGenerator
+	{
+		virtual Piece next() const override
+		{
+			return { G_O, rand_color(), rand_shape() };
+		}
+	};
 	
 	class GoalReachedAction : public LevelOTA
 	{
 		virtual void action() override
 		{
 			level->blank_skip(60);
-			level->show_dialog("Cappuccino", "Great work!",
+			level->show_dialog("Cappuccino", "Something wrong with the RNG?! We need to look into that.",
 				[](void* self)
 				{					
 					((Level*)self)->next_level();
-					FATAL_ERROR("Entrypoint jump missed");						
+					FATAL_ERROR("Entrypoint jump missed");
 				});
 		}
 	};
@@ -31,27 +38,10 @@ public:
 	virtual void init() override
 	{		
 		Level::init();				
-		goal_reached_action.set_level(this);				
-		mesh_spawn_x = 3;
-		set_goal(7);
-	}
-	
-	virtual void on_level_start() override
-	{		
-		show_dialog("Cappuccino", "Now let's add some dynamism to the game. I'm introducing you to the new speed panel",
-		[](void* sender)
-		{
-			for(int i=1;i<60;i++)
-			{
-				if(i&1)
-				{
-					((Level*)sender)->set_speed(1+i/2);
-				}
-				VBlankIntrWait();
-			}
-			((Level*)sender)->show_dialog("Cappuccino", "It shows how fast the pieces fall in this game.\nGood luck!");
-		});
-	}
+		goal_reached_action.set_level(this);						
+		set_goal(8);
+		set_piece_generator(new PGen());
+	}	
 
 	virtual void on_score_changed(int old_value) override
 	{
@@ -67,5 +57,8 @@ public:
 		inc_score(value);
 	}
 	
-	~Level6() { }
+	~Level6() 
+	{
+		delete get_piece_generator();
+	}
 };

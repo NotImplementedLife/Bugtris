@@ -54,8 +54,7 @@ public:
 		some_moves_performed_action.set_level(this);
 		goal_reached_action.set_level(this);
 		down_moves_performed_action.set_level(this);		
-		move_direction = -1;
-		mesh_spawn_x = 3;
+		move_direction = -1;		
 		set_goal(3);
 	}
 	

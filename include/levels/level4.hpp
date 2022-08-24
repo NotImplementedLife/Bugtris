@@ -37,8 +37,7 @@ public:
 	{		
 		Level::init();				
 		hide_speed_panel();
-		goal_reached_action.set_level(this);				
-		mesh_spawn_x = 3;
+		goal_reached_action.set_level(this);						
 		set_goal(7);
 	}
 	

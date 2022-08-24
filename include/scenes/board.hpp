@@ -93,7 +93,7 @@ public:
 	void hide_speed_panel();
 protected:
 	int move_direction = 1;		
-	int mesh_spawn_x = 0;
+	int mesh_spawn_x = 3;
 	bool clear_lines = true;
 	bool ffw_enabled = true;
 

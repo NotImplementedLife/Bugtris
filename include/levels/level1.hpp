@@ -41,6 +41,7 @@ public:
 		first_full_line_action.set_level(this);
 		goal_reached_action.set_level(this);		
 		set_goal(5);		
+		mesh_spawn_x = 0;
 		clear_lines = false;		
 		ffw_enabled = false;
 	}

@@ -31,8 +31,7 @@ public:
 	virtual void init() override
 	{		
 		Level::init();				
-		goal_reached_action.set_level(this);				
-		mesh_spawn_x = 3;
+		goal_reached_action.set_level(this);						
 		set_goal(7);
 	}
 	
