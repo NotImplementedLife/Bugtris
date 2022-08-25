@@ -94,7 +94,7 @@ void Board::frame()
 				on_board_overlap();
 			}
 		}
-	}	
+	}
 	frame_key_control = 0;
 	frame_cnt++;
 	if(frame_cnt == update_rate) {
@@ -123,20 +123,20 @@ void Board::inc_score(int amount)
 }
 
 void Board::on_key_down(int keys)
-{	
+{
 	if((keys & KEY_START))
-	{		
+	{
 		set_score(1000);
 	}
 	if((keys & KEY_LEFT) && !(frame_key_control & KEY_LEFT))
-	{		
+	{
 		frame_key_control |= KEY_LEFT;
 		if(user_controllable_mesh)
-		{			
-			user_controllable_mesh->move(-move_direction,0);
+		{
+			user_controllable_mesh->move(-move_direction, 0);
 			if(!ucm_in_bounds())
 			{
-				user_controllable_mesh->move(+move_direction,0);
+				user_controllable_mesh->move(+move_direction, 0);
 			}
 		}
 	}	
@@ -144,11 +144,11 @@ void Board::on_key_down(int keys)
 	{
 		frame_key_control |= KEY_RIGHT;
 		if(user_controllable_mesh)
-		{			
-			user_controllable_mesh->move(+move_direction,0);
+		{
+			user_controllable_mesh->move(+move_direction, 0);
 			if(!ucm_in_bounds())
 			{
-				user_controllable_mesh->move(-move_direction,0);
+				user_controllable_mesh->move(-move_direction, 0);
 			}
 		}
 	}
@@ -156,7 +156,7 @@ void Board::on_key_down(int keys)
 	{
 		frame_key_control |= KEY_UP;
 		if(user_controllable_mesh)
-		{			
+		{
 			user_controllable_mesh->rotate_cw();			
 			if(!ucm_in_bounds())
 			{

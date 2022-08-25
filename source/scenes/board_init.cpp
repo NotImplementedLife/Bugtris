@@ -111,6 +111,7 @@ void Board::init_speed_panel()
 	speed_stripes->set_position(10,10);
 	speed_stripes->update_position(nullptr);
 	speed_stripes->update_visual();	
+	speed_stripes->show_in_front_of(speed_panel);
 	
 	SPRITE_PALETTE[0x31] = 0x7fef;
 	

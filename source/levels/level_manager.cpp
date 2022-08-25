@@ -8,6 +8,7 @@
 #include "levels/level7.hpp"
 #include "levels/level8.hpp"
 #include "levels/level9.hpp"
+#include "levels/level10.hpp"
 
 Level* LevelManager::generate(int id)
 {
@@ -22,6 +23,7 @@ Level* LevelManager::generate(int id)
 		case 7: return new Level7();
 		case 8: return new Level8();
 		case 9: return new Level9();
+		case 10: return new Level10();
 		
 		
 		default: return nullptr;
