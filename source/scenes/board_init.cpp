@@ -59,8 +59,9 @@ void Board::init_dialog_fg()
 	vram_chr_2.reserve(&dialog_txt_addr, tiles_size_8bpp(4*23));		
 	vram_chr_2.reserve(&dialog_title_addr, tiles_size_8bpp(2*7));
 	vram_chr_2.reserve(&char_pic_addr, tiles_size_8bpp(4*4));		
-	
+		
 	bgInit(0, Text256x256, Pal4bit, 2, 1);
+	Utils::zeroize(bgGetMapPtr(0), 32*32);
 	
 	dmaCopy(dialog_frameTiles, frame_bg_addr.get_value(), dialog_frameTilesLen);
 	dmaCopy(dialog_frameMap, bgGetMapPtr(0)+32*11, dialog_frameMapLen);
