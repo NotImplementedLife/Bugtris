@@ -27,6 +27,9 @@ private:
 	void (*dialog_callback)(void*) = 0;
 	
 	bool process_dialog();
+	
+	void set_background(const void* src);
+	void dialog_set_pos(int y);
 public:	
 	virtual void init() override;
 	

@@ -8,6 +8,7 @@ using namespace Astralbrew::Utils;
 using namespace Astralbrew::Objects;
 
 #include "intro-bg-galaxy.h"
+#include "intro-bg-cats.h"
 
 void Intro::init()
 {
@@ -16,7 +17,7 @@ void Intro::init()
 	
 	bgInit(2, Text256x256, Pal4bit, 0, 0);
 	
-	dmaCopy(intro_bg_galaxyBitmap, (void*)0x06000000, intro_bg_galaxyBitmapLen);
+	set_background(intro_bg_galaxyBitmap);	
 	
 	Address transparent_tile;
 	vram_obj.reserve(&transparent_tile, tiles_size_4bpp(1));
@@ -30,6 +31,8 @@ void Intro::init()
 	show_dialog("Somewhere in a parallel universe, ...",
 		[](void* self)
 		{
+			reinterpret_cast<Intro*>(self)->set_background(intro_bg_catsBitmap);
+			reinterpret_cast<Intro*>(self)->dialog_set_pos(128);
 			reinterpret_cast<Intro*>(self)->show_dialog("... a group of cats creates a Tetris game.",
 			[](void* self)
 			{
@@ -71,6 +74,22 @@ void Intro::init()
 	// Obj over BG2 yields to different results on no$gba and VBA/mGBA.
 	// Placing sprites below BG2 seems to solve the inconsistency.
 	bgSetAlpha(2, 6, 4, 8);
+}
+
+void Intro::dialog_set_pos(int y)
+{
+	for(int i=28;i--;)
+	{
+		dialog_blocks[i]->set_position(dialog_blocks[i]->pos_x(), y);				
+		dialog_blocks[i]->update_position(nullptr);
+		dialog_bg[i]->set_position(dialog_blocks[i]->pos_x(), y);
+		dialog_bg[i]->update_position(nullptr);
+	}	
+}
+
+void Intro::set_background(const void* src)
+{
+	dmaCopy(src, (void*)0x06000000, intro_bg_galaxyBitmapLen);
 }
 
 void Intro::show_dialog(const char* message, void (*callback)(void*))
