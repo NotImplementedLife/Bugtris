@@ -10,11 +10,13 @@ struct _CatsPicsCollectionItem
     const unsigned short* palette;
 };
 
+struct _CatRecord {const char* name; const unsigned int* tiles; const unsigned short* pal;};
+
 template<int N>
 struct _CatsPicsCollection
-{
-    struct Record {const char* name; const unsigned int* tiles; const unsigned short* pal;};
-    constexpr _CatsPicsCollection(const Record (&src)[N]) : _name(), _tiles(), _pal()
+{	
+    
+    constexpr _CatsPicsCollection(const _CatRecord (&src)[N]) : _name(), _tiles(), _pal()
     {
         for(int i=0;i<N;i++)
         {
@@ -67,9 +69,9 @@ struct _CatsPicsCollection
 	}
 };
 
-
-constexpr _CatsPicsCollection CatsPics 
-{{
+constexpr _CatRecord CatRecords[] = {
 	{"Cappuccino", cappuccinoTiles, cappuccinoPal},
 	{"Bob", bobTiles, bobPal},
-}};
+};
+
+constexpr _CatsPicsCollection CatsPics {CatRecords};
