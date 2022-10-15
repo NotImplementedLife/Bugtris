@@ -157,5 +157,5 @@ Intro::~Intro()
 	OamPool::deploy();
 	
 	
-	zeroize((void*)0x06000000, intro_bg_galaxyBitmapLen); // possibly faulty?
+	zeroize((void*)0x06000000, intro_bg_galaxyBitmapLen);	
 }

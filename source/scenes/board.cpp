@@ -14,9 +14,12 @@ void Board::init()
 	Video::setMode(0);
 	objEnable1D();	
 	init_board_table();
-	init_dialog_bg();
-	init_dialog_fg();		
+	init_dialog_bg();	
+	
+	init_dialog_fg();	
+	
 	init_speed_panel();
+	
 
 	hide_dialog();
 	
