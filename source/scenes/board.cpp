@@ -157,7 +157,7 @@ void Board::on_key_down(int keys)
 	}
 	if((keys & KEY_A) && !(frame_key_control & KEY_A) && !dialog_stream)
 	{
-		frame_key_control |= KEY_UP;
+		frame_key_control |= KEY_A;
 		if(user_controllable_mesh)
 		{
 			user_controllable_mesh->rotate_cw();			
@@ -166,6 +166,18 @@ void Board::on_key_down(int keys)
 				user_controllable_mesh->rotate_ccw();
 			}
 		}
+	}
+	else if((keys & KEY_B) && !(frame_key_control & KEY_A))
+	{
+		frame_key_control |= KEY_B;
+		if(user_controllable_mesh)
+		{
+			user_controllable_mesh->rotate_ccw();			
+			if(!ucm_in_bounds())
+			{
+				user_controllable_mesh->rotate_cw();
+			}
+		}		
 	}
 }
 
