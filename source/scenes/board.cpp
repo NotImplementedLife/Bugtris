@@ -155,7 +155,7 @@ void Board::on_key_down(int keys)
 			}
 		}
 	}
-	if(keys & KEY_UP && !(frame_key_control & KEY_UP))
+	if((keys & KEY_A) && !(frame_key_control & KEY_A) && !dialog_stream)
 	{
 		frame_key_control |= KEY_UP;
 		if(user_controllable_mesh)
