@@ -4,7 +4,7 @@
 
 Piece PieceGenerator::next() const
 {
-	return { (u8)(rand()%7), (u8)(rand()%8), (u8)(rand()%4) };
+	return { (unsigned char)(rand()%7), (unsigned char)(rand()%8), (unsigned char)(rand()%4) };
 }
 
 unsigned char PieceGenerator::rand_color()

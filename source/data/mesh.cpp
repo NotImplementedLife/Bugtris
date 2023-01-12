@@ -1,5 +1,7 @@
 #include "data/mesh.hpp"
 
+#include <Astralbrew>
+
 using namespace Astralbrew;
 
 Mesh::Mesh() : _x(0), _y(0), _width(0), _height(0) { data = nullptr; }
@@ -7,11 +9,11 @@ Mesh::Mesh() : _x(0), _y(0), _width(0), _height(0) { data = nullptr; }
 Mesh::Mesh(int x, int y, int width, int height)
 	: _x(x), _y(y), _width(width), _height(height)
 {	
-	data = new u8[_width*_height];			
+	data = new unsigned char[_width*_height];			
 	for(int i=0;i<_width*_height;i++) data[i]=0;
 }
 
-Mesh::Mesh(int x, int y, int width, int height, const u8* const source_table)
+Mesh::Mesh(int x, int y, int width, int height, const unsigned char* const source_table)
 	: Mesh(x,y,width, height)
 {
 	for(int i=0;i<width*height;i++)
@@ -22,7 +24,7 @@ Mesh::Mesh(int x, int y, int width, int height, const u8* const source_table)
 
 Mesh::Mesh(const Mesh& m) : _x(m._x), _y(m._y), _width(m._width), _height(m._height)
 {		
-	data = new u8[_width*_height];	
+	data = new unsigned char[_width*_height];	
 	for(int i=0;i<_width*_height;i++)
 		data[i]=m.data[i];
 }
@@ -40,7 +42,7 @@ Mesh& Mesh::operator = (const Mesh& m)
 	_y = m._y;
 	_width = m._width;
 	_height = m._height;
-	data = new u8[_width*_height];
+	data = new unsigned char[_width*_height];
 	for(int i=0;i<_width*_height;i++)
 		data[i]=m.data[i];
 	return *this;
@@ -60,7 +62,7 @@ Mesh& Mesh::operator = (Mesh&& m)
 
 void Mesh::resize(int new_width, int new_height, bool clear)
 {
-	u8* new_data = new u8[new_width*new_height];		
+	unsigned char* new_data = new unsigned char[new_width*new_height];		
 	for(int i=0;i<new_width*new_height;i++) new_data[i]=0;
 	
 	if(!clear)
@@ -85,7 +87,7 @@ int Mesh::at(int px, int py) const
 	return data[py*_width+px];
 }
 
-void Mesh::copy(const u8* src, int w, int h, int dx, int dy, bool overwrite)
+void Mesh::copy(const unsigned char* src, int w, int h, int dx, int dy, bool overwrite)
 {	
 	for(int iy = 0; iy < h; iy++)
 	{
@@ -220,7 +222,7 @@ void Mesh::set_all_values(int v)
 
 void Mesh::rotate_ccw()
 {	
-	assert(width()==height());
+	gba_assert(width()==height());
 	
 	const int L = width()-1;
 	for(int iy=0;iy<=L/2;iy++) 
@@ -239,7 +241,7 @@ void Mesh::rotate_ccw()
 
 void Mesh::rotate_cw()
 {
-	assert(width()==height());
+	gba_assert(width()==height());
 	
 	const int L = width()-1;
 	for(int iy=0;iy<=L/2;iy++) 
@@ -312,7 +314,7 @@ Mesh::~Mesh()
 	delete[] data;
 }
 
-const u8 mesh_gfx[7][16] = 
+const unsigned char mesh_gfx[7][16] = 
 {
 	{
 		0,1,0,0,

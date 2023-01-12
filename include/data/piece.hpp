@@ -4,9 +4,9 @@
 
 struct Piece
 {
-	u8 g_id;
-	u8 color;
-	u8 shape;
+	unsigned char g_id;
+	unsigned char color;
+	unsigned char shape;
 };
 
 #define G_I 0

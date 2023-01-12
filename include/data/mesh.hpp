@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Astralbrew>
-
 #define mk_block(color, design) (0x80|(((color)<<2)|(design)))
 
 class Mesh
@@ -11,13 +9,13 @@ private:
 	int _y;
 	int _width;
 	int _height;
-	u8* data;
+	unsigned char* data;
 	
-	void copy(const u8* src, int w, int h, int dx, int dy, bool overwrite = false);
+	void copy(const unsigned char* src, int w, int h, int dx, int dy, bool overwrite = false);
 public:	
 	Mesh();
 	Mesh(int x, int y, int width, int height);
-	Mesh(int x, int y, int width, int height, const u8* const source_table);
+	Mesh(int x, int y, int width, int height, const unsigned char* const source_table);
 	
 	Mesh(const Mesh&);
 	Mesh(Mesh&&);
@@ -60,4 +58,4 @@ public:
 	~Mesh();
 };
 
-extern const u8 mesh_gfx[7][16];
+extern const unsigned char mesh_gfx[7][16];

@@ -1,161 +1,83 @@
 #include "scenes/intro.hpp"
 #include "scenes/title.hpp"
 
-using namespace Astralbrew;
-using namespace Astralbrew::Drawing;
-using namespace Astralbrew::Video;
-using namespace Astralbrew::Utils;
-using namespace Astralbrew::Objects;
+#include "intro_bg_cats.h"
+#include "intro_dialog_bg.h"
 
-#include "intro-bg-galaxy.h"
-#include "intro-bg-cats.h"
-
-void Intro::init()
+void IntroScene::init()
 {
-	Video::setMode(3);
-	objEnable1D();
-	
-	bgInit(2, Text256x256, Pal4bit, 0, 0);
-	
-	set_background(intro_bg_galaxyBitmap);	
-	
-	Address transparent_tile;
-	vram_obj.reserve(&transparent_tile, tiles_size_4bpp(1));
-	
-	vram_obj.reserve(&text_drawing_address, tiles_size_4bpp(2*28));
-	vram_obj.reserve(&text_bg_address, tiles_size_4bpp(2));
-	
-	vwf.set_render_space((void*)0x06014020, 2, 28);
-	vwf.clear(Pal4bit);
-		
-	show_dialog("Somewhere in a parallel universe, ...",
-		[](void* self)
-		{
-			reinterpret_cast<Intro*>(self)->set_background(intro_bg_catsBitmap);
-			reinterpret_cast<Intro*>(self)->dialog_set_pos(128);
-			reinterpret_cast<Intro*>(self)->show_dialog("... a group of cats creates a Tetris game.",
-			[](void* self)
-			{
-				reinterpret_cast<Intro*>(self)->close()->next(new Title());
-			});
-		});
-		
-	u16* _d_bg = (u16*)text_bg_address.get_value();
-	for(int i=0;i<32;i++)
+	GenericScene::init();		
+	dialog_fg_ptr = reserve_sprite_vram(Measure()._4bpp().tiles(2*28));		
+	Hardware::SpritePalette[0] = Colors::White;		
+	for(int i=0;i<DIALOG_TILES_WIDTH;i++)
 	{
-		_d_bg[i] = 0x2222;
-	}
-	
-	SPRITE_PALETTE[1] = Colors::White;
-	SPRITE_PALETTE[2] = Colors::Black;	
+		short* frame_offset = (short*)(((int)dialog_fg_ptr) + Measure()._4bpp().tiles(2*i));			
 		
-	for(int i=0;i<28;i++)
-	{
-		dialog_blocks_addr[i] = text_drawing_address + tiles_size_4bpp(2*i);
-		dialog_blocks[i] = Sprite::quick16(&dialog_blocks_addr[i], SIZE_8x16, ANCHOR_TOP_LEFT);
-		dialog_blocks[i]->set_position(8+8*i, 10);
-		dialog_blocks[i]->get_attribute()->set_priority(0);
-		dialog_blocks[i]->update_position(nullptr);
-		dialog_blocks[i]->update_visual();
-		
-		dialog_bg[i] = Sprite::quick16(&text_bg_address, SIZE_8x16, ANCHOR_TOP_LEFT);
-		dialog_bg[i]->set_position(8+8*i, 10);
-		dialog_bg[i]->get_attribute()->set_priority(1);
-		dialog_bg[i]->update_position(nullptr);
-		dialog_bg[i]->update_visual();
-		dialog_blocks[i]->show_in_front_of(dialog_bg[i]);
-		
-		// OBJ Mode: Semi transparent
-		// do the hard way since it's not yet implemented in Astralbrew
-		u16* attr0 = (u16*)dialog_bg[i]->get_attribute();
-		*attr0 |= 1<<10; 
-	}
-	
-	// Obj over BG2 yields to different results on no$gba and VBA/mGBA.
-	// Placing sprites below BG2 seems to solve the inconsistency.
-	bgSetAlpha(2, 6, 4, 8);
-}
-
-void Intro::dialog_set_pos(int y)
-{
-	for(int i=28;i--;)
-	{
-		dialog_blocks[i]->set_position(dialog_blocks[i]->pos_x(), y);				
-		dialog_blocks[i]->update_position(nullptr);
-		dialog_bg[i]->set_position(dialog_blocks[i]->pos_x(), y);
-		dialog_bg[i]->update_position(nullptr);
+		dialog_fg_frames[i] = new ObjFrame(frame_offset, 4);
+		Sprite* column = create_sprite(SIZE_8x16, dialog_fg_frames[i], {8+8*(i),4});
+		column->set_palette_number(vwf_color>>4);
 	}	
+	for(int i=0;i<(DIALOG_TILES_WIDTH+3)/4;i++)
+	{
+		create_sprite(SIZE_32x16, new ObjFrame(&ROA_intro_dialog_bg, 0, 0), {8+32*i,4})->set_mode_semi_transparent();
+	}
+
+	vwf.set_render_space(dialog_fg_ptr, 2, DIALOG_TILES_WIDTH);
+	
+	set_intro_bg_palette_effect(new PaletteFadeFromColorEffect(Hardware::BackgroundPalette, Colors::Black, get_shadow_background_palette(), 10));
+			
+	Video::bgSetAlpha(4, 8, 2, 6); // ??
+	
+	show_dialog(&dialog_lines[0]);
 }
 
-void Intro::set_background(const void* src)
+void IntroScene::change_background(void*, void*)
 {
-	dmaCopy(src, (void*)0x06000000, intro_bg_galaxyBitmapLen);
+	replace_bitmap(&ROA_intro_bg_cats);
 }
 
-void Intro::show_dialog(const char* message, void (*callback)(void*))
+void IntroScene::end_scene(void*, void*)
 {
-	new_dialog = true;
-	dialog_stream = message;
-	dialog_callback = callback;
+	close()->next(new TitleScene());
 }
 
-bool Intro::process_dialog()
+void IntroScene::show_dialog(DialogLine* line) { dialog_stream = line; }
+
+bool IntroScene::process_dialog()
 {
 	if(!dialog_stream) 
 		return false;
+
+	vwf.clear(Video::Pal4bit);
+	int count = vwf.put_text(dialog_stream->message, Video::Pal4bit, SolidColorBrush(vwf_color&0xF));
+	dialog_stream->message+=count;
 	
-	new_dialog = false;
-	vwf.clear(Pal4bit);
-	int count = vwf.put_text(dialog_stream, Pal4bit, SolidColorBrush(0x1));
-	dialog_stream+=count;		
-	
-	if(count==0) 
-	{
-		dialog_stream=nullptr;		
-		//hide_dialog();
-		if(dialog_callback)
-		{				
-			dialog_callback(this);	
-			if(!new_dialog)
-				dialog_callback = 0;				
-		}		
+	if(count==0)
+	{			
+		if(dialog_stream->line_finished_handler != nullptr)
+		{
+			(this->*(dialog_stream->line_finished_handler))(this, nullptr);
+		}
+		dialog_stream = dialog_stream->next;
 		return false;
 	}
 	else
 	{
-		wait_for_key_pressed(KEY_A | KEY_START);
+		//for(int i=0;i<10;i++) force_wait_vblank();
+		wait_for_key_pressed(Keys::A | Keys::Start);
 		return true;
 	}
-}
+	return true;
+}	
 
-void Intro::frame()
+void IntroScene::frame()
 {
 	process_dialog();
-	
-	OamPool::deploy();
-	if(ready)
-	{
-		close()->next(new Title());
-	}	
+	GenericScene::frame();			
 }
 
-void Intro::on_key_down(int keys)
-{
-	if(keys & KEY_START)
-	{
-		ready=true;
-	}
-}
-
-Intro::~Intro()
-{	
-	for(int i=28;i--;)
-	{
-		delete dialog_blocks[i];
-		delete dialog_bg[i];		
-	}	
-	OamPool::deploy();
-	
-	
-	zeroize((void*)0x06000000, intro_bg_galaxyBitmapLen);	
+IntroScene::~IntroScene()
+{		
+	release_sprite_vram(dialog_fg_ptr);		
+	set_outro_bg_palette_effect(new PaletteFadeToColorEffect(Hardware::BackgroundPalette, Colors::Black, 10));
 }

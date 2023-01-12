@@ -10,6 +10,10 @@ ifeq ($(strip $(ASTRALBREW)),)
 $(error "Please set ASTRALBREW in your environment. export ASTRALBREW=<path to>ASTRALBREW")
 endif
 
+ifeq ($(strip $(ASTRALBREWTOOLS)),)
+$(error "Environment variable missing ASTRALBREWTOOLS")
+endif
+
 include $(DEVKITARM)/gba_rules
 
 #---------------------------------------------------------------------------------
@@ -30,7 +34,7 @@ SOURCES		:= source source/scenes source/data source/levels
 INCLUDES	:= include include/scenes include/data include/levels
 DATA		:=
 MUSIC		:=
-GRAPHICS    := gfx
+GRAPHICS    := assets
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -144,14 +148,10 @@ $(OUTPUT).elf	:	$(OFILES)
 
 $(OFILES_SOURCES) : $(HFILES)
 
-#---------------------------------------------------------------------------------
-%.s %.h	: %.png %.grit
+%.s %.h: %.png
 #---------------------------------------------------------------------------------	
-	grit $< -fts -o$*
-
-#%.4bpp.s %.4bpp.h : %.4bpp.png	
-#	touch $*.4bpp.s
-#	touch $*.4bpp.h
+	echo $*
+	$(ASTRALBREWTOOLS)/asset_build.exe -i$< -h$*.h -s$*.s
 
 #---------------------------------------------------------------------------------
 # The bin2o rule should be copied and modified

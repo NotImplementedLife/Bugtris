@@ -2,49 +2,41 @@
 
 #include <Astralbrew>
 
-using Astralbrew::World::Scene;
-using Astralbrew::Text::VwfEngine;
-using Astralbrew::Memory::VramManager;
-using Astralbrew::Memory::Address;
-using Astralbrew::Entity::Sprite;
+using namespace Astralbrew;
 
-class Intro : public Scene
-{
+#include "intro_bg_galaxy.h"
+
+class IntroScene : public GenericScene
+{	
 private:
-	bool ready = false;	
+	inline static constexpr int DIALOG_TILES_WIDTH  = 28;	
+	MapInfo* bg = require_map(&ROA_intro_bg_galaxy);	
+	VwfEngine vwf = VwfEngine(Resources::Fonts::default_8x16);
+	int vwf_color = reserve_sprite_color(Colors::White);		
+	short* dialog_fg_ptr;
+	ObjFrame* dialog_fg_frames[DIALOG_TILES_WIDTH];
 	
-	VramManager vram_obj = VramManager(0x06014000, 0x4000);
+	struct DialogLine
+	{
+		const char* message;
+		NonStaticEventHandler<IntroScene> line_finished_handler;
+		DialogLine* next;
+	};
 	
-	Address text_drawing_address;
-	Address text_bg_address;
-	VwfEngine vwf = VwfEngine(Astralbrew::Resources::Fonts::default_8x16);
-	Sprite* dialog_blocks[28];
-	Address dialog_blocks_addr[28];
-	Sprite* dialog_bg[28];
+	DialogLine* dialog_stream = nullptr;
+	DialogLine dialog_lines[2] =
+	{
+		{ "Somewhere in a parallel universe, ...", &IntroScene::change_background, &dialog_lines[1] },
+		{ "... a group of cats creates a Tetris game.", &IntroScene::end_scene, nullptr }
+	};
 	
-	bool new_dialog = false;
-	const char* dialog_stream = nullptr;
-	void (*dialog_callback)(void*) = 0;
+	void change_background(void*, void*);
+	void end_scene(void*, void*);
+	void show_dialog(DialogLine* line);
+	bool process_dialog();	
 	
-	bool process_dialog();
-	
-	void set_background(const void* src);
-	void dialog_set_pos(int y);
-public:	
-	virtual void init() override;
-	
+public:
+	virtual void init() override;	
 	virtual void frame() override;
-	
-	virtual void on_key_down(int keys) override;	
-	
-	void show_dialog(const char* message, void (*callback)(void*) = 0);
-	
-	~Intro();
-	
-	inline static int hbl_cnt_crd=0;
-	__attribute__((target("thumb"))) inline static void exit_hblank_effect()
-	{				
-		Astralbrew::Video::bgScroll(2,hbl_cnt_crd++,0);
-		Astralbrew::Video::bgUpdate();
-	}
+	~IntroScene();
 };

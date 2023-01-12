@@ -1,46 +1,37 @@
 #pragma once
 
 #include <Astralbrew>
+
+using namespace Astralbrew;
+
 #include "data/mesh.hpp"
 
-using Astralbrew::World::Scene;
-using Astralbrew::Memory::Address;
-using Astralbrew::Memory::VramManager;
-using Astralbrew::Vector;
-using Astralbrew::Pair;
-using Astralbrew::Text::VwfEngine;
+#include "title_bg.h"
+#include "title_fg.h"
+#include "piece_tiles.h"
 
-class Title : public Scene
+class TitleScene : public GenericScene
 {
 private:
-	VramManager vram_chr_1 = VramManager::from_char_block(1);
-	VramManager vram_chr_2 = VramManager::from_char_block(2);		
+	MapInfo* title_bg = require_map(3, &ROA_title_bg);
+	MapInfo* title_fg = require_map(2, &ROA_title_fg);
+	MapInfo* dialog_bg = require_text_map(1, 256, 256, 4, 2*10);
 	
-	Address bg_addr;
-	Address fg_addr;
-	Address piece_bg_addr;
+	VwfEngine vwf = VwfEngine(Resources::Fonts::default_8x16);
+
+	ResourceInfo* pieces_gfx = require_asset(&ROA_piece_tiles, Video::Backgrounds(3));
+	int first_piece_tile_id;
+	
 	Vector<Mesh> meshes;
+	void create_meshes();
+	void draw_mesh(const Mesh& mesh);
 	
-	Address dialog_addr;
-	VwfEngine vwf = VwfEngine(Astralbrew::Resources::Fonts::default_8x16);
+	void switch_start_visibility(void*, void*);
+	BindingObjectScheduledTask switch_start_visibility_task { &TitleScene::switch_start_visibility, this, 30, 0 };
 	
-	int piece_tiles_start_id;
-	
-	Vector<Pair<int,int>> moves;
-	
-	void draw_mesh(const Mesh& m);
-	bool mesh_collides(int i);
-	void build();
-	
-	int anim_cooldown = 30;
-	
-	
+	virtual void on_key_down(void* sender, void* _keys);
 public:
 	virtual void init() override;	
-	
-	virtual void frame() override;
-	
-	virtual void on_key_down(int keys) override;
-	
-	~Title();
+	virtual void frame() override;	
+	~TitleScene();
 };

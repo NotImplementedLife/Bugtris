@@ -1,41 +1,57 @@
 #include "scenes/title.hpp"
 
-#include "title-bg.h"
-#include "title-fg.h"
-#include "piece_tiles.h"
-#include <stdlib.h>
-
-#include "levels/level1.hpp"
-
-using namespace Astralbrew;
-using namespace Astralbrew::Video;
-using namespace Astralbrew::Drawing;
-
-void Title::init()
+void TitleScene::init()
 {
-	Video::setMode(0);
+	Memory::clear((void*)0x06000000, 0x18000);
+	GenericScene::init();
+	
+	first_piece_tile_id = translate_tile_id(3, pieces_gfx, 0);
+	create_meshes();
+	
+	int vwf_color = reserve_background_color(Colors::White);
+	
+	vwf.set_render_space(dialog_bg->resource->offset(),2,10);
+	VwfEngine::prepare_map(vwf, (unsigned short*)Video::bgGetMapPtr(1), 32, 10, 14, vwf_color>>4);
+	vwf.put_text(" Press START", Video::Pal4bit, SolidColorBrush(vwf_color & 0xF));
+	
+	schedule_task(&switch_start_visibility_task);
+	
+	key_down.add_event(&TitleScene::on_key_down, this);
+	
+	Video::bgSetScroll(3, 8, 0);
+	Video::bgSetScroll(2, 0, 0);
+	Video::bgUpdate();	
+}
 
-	Address transparent_tile;
-	vram_chr_1.reserve(&transparent_tile, tiles_size_8bpp(1));
-	vram_chr_1.reserve(&bg_addr, title_bgTilesLen);
-	vram_chr_1.reserve(&fg_addr, title_fgTilesLen);		
-	vram_chr_1.reserve(&piece_bg_addr, piece_tilesTilesLen);			
+void TitleScene::frame()
+{
+	for(int i=0;i<meshes.size();i++)
+	{
+		draw_mesh(meshes[i]);		
+	}	
 	
-	bgInit(2, Text256x256, Pal8bit, 1, 0);
-	bgInit(3, Text256x256, Pal8bit, 1, 1);
-	
-	piece_tiles_start_id = ((int)piece_bg_addr.get_value() - (int)bgGetTilesPtr(3))/64;
-	
-	dmaCopy(title_bgMap, bgGetMapPtr(3), title_bgMapLen);
-	dmaCopy(title_fgMap, bgGetMapPtr(2), title_fgMapLen);
-		
-	
-	copyTiles256(title_bgTiles, bg_addr.get_value(), title_bgTilesLen, title_bgPal, title_bgPalLen, 1);
-	copyTiles256(title_fgTiles, fg_addr.get_value(), title_fgTilesLen, title_fgPal, title_fgPalLen, 33);
-	copyTiles256(piece_tilesTiles, piece_bg_addr.get_value(), piece_tilesTilesLen, piece_tilesPal, piece_tilesPalLen, 64);
-	
-	meshes.clear();
-	
+	Video::bgScroll(2, 1, 0);
+	Video::bgUpdate();
+	GenericScene::frame();
+}
+
+void TitleScene::on_key_down(void* sender, void* _keys) 
+{
+	int keys = (int)_keys;
+	if(keys & Keys::Start)
+	{
+		close()->next(nullptr);
+	}
+}
+
+TitleScene::~TitleScene()
+{
+	unschedule_task(&switch_start_visibility_task);
+	key_down.remove_event(&TitleScene::on_key_down, this);
+}
+
+void TitleScene::create_meshes()
+{
 	meshes.push_back(Mesh(0,2,4,4,mesh_gfx[4]));
 	meshes.back().rotate_cw();
 	meshes.back().replace(1, mk_block(3,3));	
@@ -106,71 +122,13 @@ void Title::init()
 	meshes.push_back(Mesh(25,6,4,4,mesh_gfx[5]));
 	meshes.back().rotate_cw();
 	meshes.back().replace(1, mk_block(6,3));
-	
-	bgInit(0, Text256x256, Pal4bit, 2, 2);
-	
-	
-	vram_chr_2.reserve(&transparent_tile, tiles_size_4bpp(1));
-	BG_PALETTE[0x91] = Colors::White;
-	vram_chr_2.reserve(&dialog_addr, tiles_size_8bpp(20));
-	vwf.set_render_space(dialog_addr.get_value(),2,10);
-	VwfEngine::prepare_map(vwf, bgGetMapPtr(0), 32, 10, 14, 0x9);
-	vwf.put_text(" Press START", Pal4bit, SolidColorBrush(0x1));
-	
-	/*int max_y = 0;	
-	do
-	{
-		for(int i=0;i<meshes.size();i++)
-		{
-			if(rand()%2==1)
-			{
-				if(rand()%3==0)
-				{
-					meshes[i].set_y(meshes[i].y()-1);
-					if(mesh_collides(i))
-					{
-						meshes[i].set_y(meshes[i].y()+1);
-					}
-					else
-					{
-						moves.push_back({i,1});
-					}				
-				}
-			}			
-		}
-		
-		max_y = -100;
-		for(int i=0;i<meshes.size();i++)
-		{
-			max_y = max(max_y, meshes[i].y());
-		}
-	} while(max_y>-4);*/
-	
-	bgSetScroll(3, 8, 0);
-	bgUpdate();	
-}
+}	
 
-bool Title::mesh_collides(int i)
-{
-	for(int j=0;j<meshes.size();j++)
-	{
-		if(j!=i)
-			if(meshes[i] && meshes[j])
-				return true;		
-	}
-	return false;
-}
-
-void Title::build()
-{
-	
-}
-
-void Title::draw_mesh(const Mesh& mesh)
+void TitleScene::draw_mesh(const Mesh& mesh)
 {
 	if(mesh.width()==0 || mesh.height()==0)
 		return;
-	u16* map = ((u16*)MAP_BASE_ADR(1)) + 3*32 + 1;
+	unsigned short* map = ((unsigned short*)Video::bgGetMapPtr(3)) + 3*32 + 1;
 	for(int y=mesh.y();y<mesh.y()+mesh.height();y++)
 	{
 		for(int x=mesh.x();x<mesh.x()+mesh.width();x++)
@@ -181,41 +139,17 @@ void Title::draw_mesh(const Mesh& mesh)
 				
 				if(val!=0)
 				{
-					map[32*y+x]=(val&0x7F)+piece_tiles_start_id;
+					map[32*y+x]=(val&0x7F)+first_piece_tile_id;
 				}
 			}
 		}
 	}
 }
 
-void Title::frame()
-{
-	anim_cooldown--;
-	if(anim_cooldown==0)
-	{
-		if(bgIsVisible(0))	
-			bgHide(0);	
-		else 
-			bgShow(0);
-		anim_cooldown=30;
-	}
-	for(int i=0;i<meshes.size();i++)
-	{
-		draw_mesh(meshes[i]);		
-	}	
-	bgScroll(2, 1, 0);
-	bgUpdate();
-}
-
-void Title::on_key_down(int keys)
-{
-	if(keys & KEY_START)
-	{
-		close()->next(new Level1());
-	}
-}
-
-Title::~Title()
-{
-	Astralbrew::Utils::zeroize((void*)VRAM, 0x1800/4);
+void TitleScene::switch_start_visibility(void*, void*)
+{	
+	if(Video::bgIsVisible(1))	
+		Video::bgHide(1);
+	else 
+		Video::bgShow(1);	
 }
