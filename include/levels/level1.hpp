@@ -2,10 +2,12 @@
 
 #include "scenes/level.hpp"
 
+#include "level2.hpp"
+
 class Level1 : public Level
 {
 public:
-	Level1() : Level(1, &Instantiator::instantiate<Level1>, nullptr) { }
+	Level1() : Level(1, &Instantiator::instantiate<Level1>, &Instantiator::instantiate<Level2>) { }
 	
 	void init() override
 	{
@@ -18,19 +20,19 @@ public:
 		
 		level_start.add_event(&Level1::on_level_start, this);
 		full_lines_count.add_event(&Level1::on_full_lines_count, this);
-		
+		score_changed.add_event(&Level1::on_score_changed, this);
 	}
-	
 	
 	~Level1()
 	{
 		level_start.remove_event(&Level1::on_level_start, this);
 		full_lines_count.remove_event(&Level1::on_full_lines_count, this);
+		score_changed.remove_event(&Level1::on_score_changed, this);
 	}
 	
 	DialogLine level_start_dialog = { "Cappuccino", "Ok so let's test it!", nullptr, nullptr };
 	DialogLine first_full_line_dialog = { "Cappuccino", "It's a full line! It should disappear though...\nWhy is it not working?\nHmmm...", nullptr, nullptr };
-	
+	DialogLine level_complete_dialog = { "Cappuccino", "Alright, that's enough. I gathered all the data I needed.", &Level::next_level_handler, nullptr };
 	
 	void on_level_start(void*, void*) {	show_dialog(&level_start_dialog); }
 	
@@ -38,8 +40,7 @@ public:
 	{
 		vblank_skip(60);
 		show_dialog(&first_full_line_dialog);
-	}
-	OneTimeAction first_full_line_ota { &Level1::on_first_full_line, this };
+	}	
 	
 	void on_full_lines_count(void* sender, void* _value)
 	{
@@ -49,5 +50,22 @@ public:
 		{
 			first_full_line_ota.execute();
 		}
+	}
+	
+	void on_score_changed(void*, void*)
+	{
+		if(get_score()>=get_goal()) 
+		{
+			goal_reached_ota.execute();
+		}	
+	}
+	
+	OneTimeAction first_full_line_ota { &Level1::on_first_full_line, this };
+	OneTimeAction goal_reached_ota    { &Level1::on_level_completed , this};
+	
+	void on_level_completed(void*, void*)
+	{
+		vblank_skip(60);
+		show_dialog(&level_complete_dialog);
 	}
 };

@@ -46,4 +46,7 @@ public:
 		nullptr};
 	
 	static void on_game_over_dialog_finished(void*, void*);
+	
+	static void next_level_handler(void*, void*);
+	static void restart_level_handler(void*, void*);
 };

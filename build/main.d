@@ -16,7 +16,9 @@ main.o: C:/Users/NotImpLife/Desktop/Bugtris-remake/source/main.cpp \
  C:/Users/NotImpLife/Desktop/Bugtris-remake/include/levels/level1.hpp \
  C:/Users/NotImpLife/Desktop/Bugtris-remake/include/scenes/level.hpp \
  C:/Users/NotImpLife/Desktop/Bugtris-remake/build/level_chars.h \
- C:/Users/NotImpLife/Desktop/Bugtris-remake/include/utils/instantiator.hpp
+ C:/Users/NotImpLife/Desktop/Bugtris-remake/include/utils/instantiator.hpp \
+ C:/Users/NotImpLife/Desktop/Bugtris-remake/include/levels/level2.hpp \
+ C:/Users/NotImpLife/Desktop/Bugtris-remake/include/levels/level3.hpp
 C:/Users/NotImpLife/Desktop/Bugtris-remake/include/scenes/intro.hpp:
 C:/Users/NotImpLife/Desktop/Bugtris-remake/build/intro_bg_galaxy.h:
 C:/Users/NotImpLife/Desktop/Bugtris-remake/include/scenes/title.hpp:
@@ -35,3 +37,5 @@ C:/Users/NotImpLife/Desktop/Bugtris-remake/include/levels/level1.hpp:
 C:/Users/NotImpLife/Desktop/Bugtris-remake/include/scenes/level.hpp:
 C:/Users/NotImpLife/Desktop/Bugtris-remake/build/level_chars.h:
 C:/Users/NotImpLife/Desktop/Bugtris-remake/include/utils/instantiator.hpp:
+C:/Users/NotImpLife/Desktop/Bugtris-remake/include/levels/level2.hpp:
+C:/Users/NotImpLife/Desktop/Bugtris-remake/include/levels/level3.hpp:

@@ -25,10 +25,11 @@ void Board::init()
 	Video::bgUpdate();
 	
 	key_down.add_event(&Board::on_key_down, this);
+	key_held.add_event(&Board::on_key_held, this);
 	
 	set_score(0);
 	set_goal(0);
-	set_speed(20);	
+	set_speed(30);
 	
 	vwf_title.set_render_space(dialog_title_gfx->offset(),2,12);
 	VwfEngine::prepare_map(vwf_title, (unsigned short*)Video::bgGetMapPtr(0), 32, 1, 12, vwf_color>>4);	
@@ -104,6 +105,7 @@ void Board::frame()
 Board::~Board()
 {
 	key_down.remove_event(&Board::on_key_down, this);
+	key_held.remove_event(&Board::on_key_held, this);
 	delete user_controllable_mesh;
 }
 
@@ -228,6 +230,22 @@ void Board::on_key_down(void* sender, void* _keys)
 	}
 }
 
+void Board::on_key_held(void* sender, void* _keys)
+{
+	int keys = (int)_keys;
+	if(keys & Keys::Down)
+	{		
+		if(ffw_enabled && user_controllable_mesh)
+		{			
+			user_controllable_mesh->move(0, move_direction);
+			if(!ucm_in_bounds())
+			{
+				user_controllable_mesh->move(0, -move_direction);
+			}
+		}
+	}
+}
+
 int Board::get_speed() const
 {
 	return update_rate;
@@ -321,6 +339,7 @@ void Board::show_dialog(DialogLine* dialog)
 {
 	Video::bgShow(0);
 	Video::bgShow(1);
+	vwf_title.clear(Video::Pal4bit);
 	vwf_title.put_text(dialog->actor_name, Video::Pal4bit, SolidColorBrush(vwf_color&0xF));
 	
 	dialog_stream = dialog;

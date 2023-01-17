@@ -50,6 +50,7 @@ private:
 	inline void set_piece_generator(PieceGenerator* piece_gen) { _piece_generator = piece_gen; }
 	
 	void on_key_down(void* sender, void* _keys);
+	void on_key_held(void* sender, void* _keys);
 	
 	void update_speed_stripes();
 protected:

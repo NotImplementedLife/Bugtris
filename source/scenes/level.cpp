@@ -10,7 +10,6 @@ Level::Level(int id, Instantiator::FunctionType<Level> this_level_instantiator, 
 	, this_level_instantiator(this_level_instantiator)
 	, next_level_instantiator(next_level_instantiator)
 { }
-	
 
 void Level::init()
 {
@@ -39,7 +38,7 @@ void Level::init()
 	level_text_chars_spr.push_back(create_sprite(SIZE_8x16, new ObjFrame(&ROA_level_chars,0, 1),{pos_x,50},{128,128})); pos_x+=8; // E
 	level_text_chars_spr.push_back(create_sprite(SIZE_8x16, new ObjFrame(&ROA_level_chars,0, 2),{pos_x,50},{128,128})); pos_x+=8; // V
 	level_text_chars_spr.push_back(create_sprite(SIZE_8x16, new ObjFrame(&ROA_level_chars,0, 1),{pos_x,50},{128,128})); pos_x+=8; // E
-	level_text_chars_spr.push_back(create_sprite(SIZE_8x16, new ObjFrame(&ROA_level_chars,0, 0),{pos_x,50},{128,128})); // L
+	level_text_chars_spr.push_back(create_sprite(SIZE_8x16, new ObjFrame(&ROA_level_chars,0, 0),{pos_x,50},{128,128})); pos_x+=8; // L
 	
 	
 	int offset = 78 + (80-pos_x-8)/2;
@@ -54,7 +53,6 @@ void Level::init()
 	}
 	
 	board_overlap.add_event(&Level::on_board_overlap, this);
-		
 }
 
 namespace
@@ -133,7 +131,6 @@ void Level::level_display_animation()
 void Level::on_board_overlap(void* sender, void*)
 {
 	game_over.trigger(sender, nullptr);
-	
 	show_dialog(&game_over_dialog);
 }
 
@@ -151,4 +148,18 @@ void Level::next_level()
 	if(next_level_instantiator == nullptr)
 		close()->next(nullptr);
 	close()->next(next_level_instantiator());
+}
+
+void Level::next_level_handler(void* sender, void*)
+{
+	Level* level = (Level*)sender;
+	level->next_level();
+}
+
+void Level::restart_level_handler(void* sender, void*)
+{
+	Level* level = (Level*)sender;
+	if(level->this_level_instantiator == nullptr)
+		level->close()->next(nullptr);
+	level->close()->next(level->next_level_instantiator());
 }
