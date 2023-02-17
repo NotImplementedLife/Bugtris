@@ -49,4 +49,27 @@ public:
 	
 	static void next_level_handler(void*, void*);
 	static void restart_level_handler(void*, void*);
+	
+	inline static constexpr DialogLine bob_says(const char* message, StaticEventHandler line_finished_handler, DialogLine* next = nullptr)
+	{
+		return { "Bob", message, line_finished_handler, next, &ROA_bob };
+	}
+	
+	inline static constexpr DialogLine bob_says(const char* message, DialogLine* next = nullptr)
+	{
+		return { "Bob", message, nullptr, next, &ROA_bob };
+	}
+	
+	inline static constexpr DialogLine cappu_says(const char* message, StaticEventHandler line_finished_handler, DialogLine* next = nullptr)
+	{
+		return { "Cappuccino", message, line_finished_handler, next, &ROA_cappuccino };
+	}
+	
+	inline static constexpr DialogLine cappu_says(const char* message, DialogLine* next = nullptr)
+	{
+		return { "Cappuccino", message, nullptr, next, &ROA_cappuccino };
+	}
+	
+	
+	
 };

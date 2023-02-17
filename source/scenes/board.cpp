@@ -7,6 +7,10 @@ PieceGenerator Board::default_piece_generator = PieceGenerator();
 
 void Board::init() 
 {
+	dialog_pic_pal_slot = 0xF;
+	for(int i=0x0;i<=0xF;i++)
+		get_bg_palette_manager()->reserve_fixed(Colors::Red, (dialog_pic_pal_slot<<4) + i);
+	
 	GenericScene::init();	
 	
 	speed_stripes_ptr = reserve_sprite_vram(Measure().bpp(4).tiles(4*8).value());
@@ -39,7 +43,10 @@ void Board::init()
 	
 	hide_dialog();
 	
-	//Debug::tty_log("INIT ADDRESS ====== %X", reinterpret_cast<void*>(&dialogs[0]));
+	int dialog_pic_base_tile = translate_tile_id(0, dialog_pic, 0);
+	for(int y=0;y<4;y++)
+		for(int x=0;x<4;x++)
+			Video::bgGetMapPtr(0)[32*(15+y)+1+x] = (dialog_pic_pal_slot<<12) | (dialog_pic_base_tile++);		
 }
 
 void Board::frame()
@@ -336,11 +343,19 @@ void Board::hide_dialog()
 }
 
 void Board::show_dialog(DialogLine* dialog)
-{
-	Video::bgShow(0);
-	Video::bgShow(1);
+{	
 	vwf_title.clear(Video::Pal4bit);
 	vwf_title.put_text(dialog->actor_name, Video::Pal4bit, SolidColorBrush(vwf_color&0xF));
+	
+	if(dialog->cat_pic!=nullptr)
+	{
+		dialog->cat_pic->extract_palette(&Hardware::BackgroundPalette[0xF0]);
+		dialog->cat_pic->extract_gfx(dialog_pic->offset());
+	}
+	
+
+	Video::bgShow(0);
+	Video::bgShow(1);	
 	
 	dialog_stream = dialog;
 }

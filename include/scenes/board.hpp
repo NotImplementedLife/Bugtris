@@ -28,7 +28,8 @@ private:
 	
 	ResourceInfo* dialog_title_gfx = require_tiles(2*12, 4, Video::Backgrounds(0));
 	ResourceInfo* dialog_body_gfx = require_tiles(4*23, 4, Video::Backgrounds(0));
-	ResourceInfo* dialog_pic = require_tiles(2*2, 4, Video::Backgrounds(0));
+	ResourceInfo* dialog_pic = require_tiles(4*4, 4, Video::Backgrounds(0));
+	int dialog_pic_pal_slot;
 	
 	int vwf_color = reserve_background_color(Colors::White);
 	
@@ -64,16 +65,8 @@ protected:
 		const char* message;
 		StaticEventHandler line_finished_handler;
 		DialogLine* next = nullptr;
+		const AssetData* cat_pic = &ROA_bob;
 	};
-	
-	/*DialogLine dialogs[5] =
-	{
-		{"Cappuccino", "Hello World!", nullptr, &dialogs[1] },
-		{"Cappuccino", "I missed you", nullptr, &dialogs[2]},
-		{"Bob", "That's true", nullptr, &dialogs[3]},
-		{"Bob", "How about a very long line that needs to be broken apart hahahahaha hell yeah my dick is as big as this text", nullptr, &dialogs[4]},
-		{"Anya", "Guess that works too", nullptr, nullptr},
-	};*/
 	
 	DialogLine* dialog_stream = nullptr;
 	

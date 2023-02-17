@@ -18,6 +18,11 @@ public:
 		score_changed.add_event(&Level3::on_score_changed, this);
 		key_down.add_event(&Level3::on_keys_down, this);
 		
+		resources_loaded.add_event(&Level3::on_resources_loaded, this);		
+	}
+	
+	void on_resources_loaded(void*, void*)
+	{
 		show_dialog(&level_start_dialog);
 	}
 	
@@ -25,6 +30,7 @@ public:
 	{		
 		lines_cleared.remove_event(&Level3::on_lines_cleared, this);
 		score_changed.remove_event(&Level3::on_score_changed, this);
+		resources_loaded.remove_event(&Level3::on_resources_loaded, this);
 		key_down.remove_event(&Level3::on_keys_down, this);
 	}
 	
@@ -52,12 +58,11 @@ public:
 			down_moves_performed_ota.execute();			
 	}
 		
-	DialogLine level_start_dialog = { "Bob", "Huh. You want the pieces to fall faster ah? Here you are.\n"
-											 "Press DOWN and don't waste your time anymore.", nullptr, nullptr };	
-	DialogLine first_full_line_dialog = { "Cappuccino", "Oh yeahhh! It works now", nullptr, nullptr };
-	DialogLine some_moves_dialog = {"Bob", "Huh???\n\nThe controls are broken...\nThat's it, you need to finish your test anyway though.\n", nullptr, nullptr};
-	DialogLine down_moves_dialog = {"Cappuccino", "Up to the heavens haha!", nullptr, nullptr};	
-	DialogLine level_complete_dialog = { "Bob", "Enough for today. I'll make some mentenance... I guess.", &Level::next_level_handler, nullptr};
+	DialogLine level_start_dialog =  bob_says("Huh. You want the pieces to fall faster ah? Here you are.\n"
+											 "Press DOWN and don't waste your time anymore.");
+	DialogLine some_moves_dialog = bob_says("Huh???\n\nThe controls are broken...\nThat's it, you need to finish your test anyway though.\n");
+	DialogLine down_moves_dialog = cappu_says("Up to the heavens haha!");
+	DialogLine level_complete_dialog = bob_says("Enough for today. I'll make some mentenance... I guess.", &Level::next_level_handler);
 	
 	OneTimeAction some_moves_performed_ota { &Level3::on_some_moves_performed, this};
 	OneTimeAction down_moves_performed_ota { &Level3::on_down_moves_performed, this};

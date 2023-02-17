@@ -30,9 +30,9 @@ public:
 		score_changed.remove_event(&Level1::on_score_changed, this);
 	}
 	
-	DialogLine level_start_dialog = { "Cappuccino", "Ok so let's test it!", nullptr, nullptr };
-	DialogLine first_full_line_dialog = { "Cappuccino", "It's a full line! It should disappear though...\nWhy is it not working?\nHmmm...", nullptr, nullptr };
-	DialogLine level_complete_dialog = { "Cappuccino", "Alright, that's enough. I gathered all the data I needed.", &Level::next_level_handler, nullptr };
+	DialogLine level_start_dialog = cappu_says("Ok so let's test it!");
+	DialogLine first_full_line_dialog = cappu_says("It's a full line! It should disappear though...\nWhy is it not working?\nHmmm...");
+	DialogLine level_complete_dialog = cappu_says("Alright, that's enough. I gathered all the data I needed.", &Level::next_level_handler);
 	
 	void on_level_start(void*, void*) {	show_dialog(&level_start_dialog); }
 	

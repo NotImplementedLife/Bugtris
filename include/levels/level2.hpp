@@ -27,13 +27,13 @@ public:
 		score_changed.remove_event(&Level2::on_score_changed, this);
 	}
 		
-	DialogLine first_full_line_dialog = { "Cappuccino", "Oh yeahhh! It works now", nullptr, nullptr };
+	DialogLine first_full_line_dialog = cappu_says("Oh yeahhh! It works now");
 	DialogLine level_complete_dialog[3] = 
 	{	
-		{ "Cappuccino", "That's great!\n\nNow let me introduce you to your next partner.", nullptr, &level_complete_dialog[1] },
-		{ "Bob", "Huh?\n\nOh hi! I'm Bob. I like ice cream and sleeping.\n\n"
-		         "Huh? About the project? Oh yeah, the project... I want to show a pleasant feature. Huh.", nullptr, &level_complete_dialog[2] },
-		{ "Cappuccino", "Isn't that great news?\n\n Let's go!", &Level::next_level_handler, nullptr },		 
+		cappu_says("That's great!\n\nNow let me introduce you to your next partner.", &level_complete_dialog[1]),
+		bob_says("Huh?\n\nOh hi! I'm Bob. I like ice cream and sleeping.\n\n"
+		         "Huh? About the project? Oh yeah, the project... I want to show a pleasant feature. Huh.", &level_complete_dialog[2]),
+		cappu_says("Isn't that great news?\n\n Let's go!", &Level::next_level_handler)		 
 	};
 	
 	void on_first_full_line(void*, void*)
