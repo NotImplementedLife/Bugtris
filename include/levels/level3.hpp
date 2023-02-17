@@ -2,10 +2,12 @@
 
 #include "scenes/level.hpp"
 
+#include "level4.hpp"
+
 class Level3 : public Level
 {
 public:
-	Level3() : Level(3, &Instantiator::instantiate<Level3>, nullptr) { }
+	Level3() : Level(3, &Instantiator::instantiate<Level3>, &Instantiator::instantiate<Level4>) { }
 	
 	void init() override
 	{
