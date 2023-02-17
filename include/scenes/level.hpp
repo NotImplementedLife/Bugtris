@@ -2,7 +2,7 @@
 
 #include "scenes/board.hpp"
 
-#include "level_chars.h"
+#include "level_chars.asset.h"
 
 #include "utils/instantiator.hpp"
 

@@ -35,6 +35,8 @@ INCLUDES	:= include include/scenes include/data include/levels
 DATA		:=
 MUSIC		:=
 GRAPHICS    := assets
+TILESETS    := tilesets
+TILEMAPS    := tilemaps
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -79,7 +81,9 @@ export OUTPUT	:=	$(CURDIR)/$(TARGET)
 
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
 			$(foreach dir,$(DATA),$(CURDIR)/$(dir)) \
-			$(foreach dir,$(GRAPHICS),$(CURDIR)/$(dir))
+			$(foreach dir,$(GRAPHICS),$(CURDIR)/$(dir)) \
+			$(foreach dir,$(TILESETS),$(CURDIR)/$(dir)) \
+			$(foreach dir,$(TILEMAPS),$(CURDIR)/$(dir))
 
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
@@ -88,6 +92,8 @@ CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 PNGFILES    :=  $(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))
+TSETFILES   :=  $(foreach dir,$(TILESETS),$(notdir $(wildcard $(dir)/*.tileset)))
+TMAPFILES   :=  $(foreach dir,$(TILEMAPS),$(notdir $(wildcard $(dir)/*.tilemap)))
 
 ifneq ($(strip $(MUSIC)),)
 	export AUDIOFILES	:=	$(foreach dir,$(notdir $(wildcard $(MUSIC)/*.*)),$(CURDIR)/$(MUSIC)/$(dir))
@@ -112,7 +118,7 @@ export OFILES_BIN := $(addsuffix .o,$(BINFILES))
 
 export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
-export OFILES := $(PNGFILES:.png=.o) $(OFILES_BIN) $(OFILES_SOURCES)
+export OFILES := $(TMAPFILES:.tilemap=.tilemap.o) $(TSETFILES:.tileset=.tileset.o) $(PNGFILES:.png=.asset.o) $(OFILES_BIN) $(OFILES_SOURCES)
 
 export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
@@ -148,10 +154,20 @@ $(OUTPUT).elf	:	$(OFILES)
 
 $(OFILES_SOURCES) : $(HFILES)
 
-%.s %.h: %.png
+%.asset.s %.asset.h: %.png
 #---------------------------------------------------------------------------------	
 	echo $*
-	$(ASTRALBREWTOOLS)/asset_build.exe -i$< -h$*.h -s$*.s
+	$(ASTRALBREWTOOLS)/asset_build.exe -i$< -h$*.asset.h -s$*.asset.s
+	
+%.tileset.s %.tileset.h: %.tileset
+#---------------------------------------------------------------------------------	
+	echo $*
+	$(ASTRALBREWTOOLS)/tiles_util.exe -tileset -f$< -h$*.tileset.h -s$*.tileset.s
+	
+%.tilemap.s %.tilemap.h: %.tilemap
+#---------------------------------------------------------------------------------	
+	echo $*
+	$(ASTRALBREWTOOLS)/tiles_util.exe -tilemap -f$< -h$*.tilemap.h -s$*.tilemap.s
 
 #---------------------------------------------------------------------------------
 # The bin2o rule should be copied and modified

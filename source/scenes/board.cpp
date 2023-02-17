@@ -1,6 +1,6 @@
 #include "scenes/board.hpp"
 
-#include "speed_panel.h"
+#include "speed_panel.asset.h"
 
 PieceGenerator Board::default_piece_generator = PieceGenerator();
 

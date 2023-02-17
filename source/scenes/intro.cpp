@@ -1,8 +1,8 @@
 #include "scenes/intro.hpp"
 #include "scenes/title.hpp"
 
-#include "intro_bg_cats.h"
-#include "intro_dialog_bg.h"
+#include "intro_bg_cats.asset.h"
+#include "intro_dialog_bg.asset.h"
 
 void IntroScene::init()
 {

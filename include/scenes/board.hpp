@@ -7,11 +7,14 @@ using namespace Astralbrew;
 #include "data/piece.hpp"
 #include "data/piece_gen.hpp"
 
-#include "board_bg.h"
-#include "dialog_bg.h"
-#include "dialog_frame.h"
-#include "piece_tiles.h"
-#include "digits.h"
+#include "board_bg.asset.h"
+#include "dialog_bg.asset.h"
+#include "dialog_frame.asset.h"
+#include "piece_tiles.asset.h"
+#include "digits.asset.h"
+
+#include "bob.asset.h"
+#include "cappuccino.asset.h"
 
 class Board : public GenericScene
 {
@@ -21,10 +24,11 @@ private:
 	MapInfo* dialog_fg = require_map(0, &ROA_dialog_frame);
 	
 	ResourceInfo* pieces_gfx = require_asset(&ROA_piece_tiles, Video::Backgrounds(3));
-	ResourceInfo* digits_gfx = require_asset(&ROA_digits, Video::Backgrounds(3));
+	ResourceInfo* digits_gfx = require_asset(&ROA_digits, Video::Backgrounds(3));	
 	
 	ResourceInfo* dialog_title_gfx = require_tiles(2*12, 4, Video::Backgrounds(0));
 	ResourceInfo* dialog_body_gfx = require_tiles(4*23, 4, Video::Backgrounds(0));
+	ResourceInfo* dialog_pic = require_tiles(2*2, 4, Video::Backgrounds(0));
 	
 	int vwf_color = reserve_background_color(Colors::White);
 	

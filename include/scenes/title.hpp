@@ -6,9 +6,9 @@ using namespace Astralbrew;
 
 #include "data/mesh.hpp"
 
-#include "title_bg.h"
-#include "title_fg.h"
-#include "piece_tiles.h"
+#include "title_bg.asset.h"
+#include "title_fg.asset.h"
+#include "piece_tiles.asset.h"
 
 class TitleScene : public GenericScene
 {

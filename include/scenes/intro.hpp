@@ -4,7 +4,7 @@
 
 using namespace Astralbrew;
 
-#include "intro_bg_galaxy.h"
+#include "intro_bg_galaxy.asset.h"
 
 class IntroScene : public GenericScene
 {	
